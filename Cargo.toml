@@ -1,0 +1,39 @@
+[package]
+name = "apollo"
+version = "0.1.0"
+authors = ["Matthew <staalkoper@gmail.com>"]
+edition = "2018"
+readme = "README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "0.4.11"
+serde = "1.0.115"
+serde_json = "1.0.57"
+serde_yaml = "0.8.13"
+simple_logger = "1.9.0"
+time = { version = "0.1.35" }
+chrono = "0.4.19"
+tokio-postgres = "0.5.5"
+typemap = "0.3.3"
+num-format = "0.4.0"
+
+[dependencies.serenity]
+version = "0.9.0-rc.1"
+features = ["framework", "standard_framework", "rustls_backend", "cache", "collector"]
+
+[dependencies.tokio]
+version = "0.2"
+features = ["macros"]
+
+[dependencies.sqlx]
+#version = "0.4.0-beta.1"
+git = "https://github.com/launchbadge/sqlx/"
+branch = "master"
+default-features = false
+features = ["runtime-tokio", "macros", "postgres", "uuid", "offline", "chrono"]
+
+[dependencies.reqwest]
+version = "0.10.8"
+features = ["json"]

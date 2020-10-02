@@ -1,0 +1,65 @@
+{
+  "db": "PostgreSQL",
+  "1c913927d614bebf4ace3340d5189911e415f11afc51c0eca356b8cf6f4b36f9": {
+    "query": "SELECT * FROM apollo.guilds",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "guild_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "channel_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 2,
+          "name": "active",
+          "type_info": "Bool"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false
+      ]
+    }
+  },
+  "539f3075886b085d6e8a33a74b21440b4fb6d97ad19b259e5704d0fa89ca2b27": {
+    "query": "INSERT INTO apollo.launches (launch_id, dispatched) VALUES ($1, true)",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "e47b03706be3a1a5b801aa5bbfd7ae17c7c80fdf5308bd0d6817563c992e1141": {
+    "query": "SELECT dispatched FROM apollo.launches WHERE launch_id = $1",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "dispatched",
+          "type_info": "Bool"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      },
+      "nullable": [
+        false
+      ]
+    }
+  }
+}
