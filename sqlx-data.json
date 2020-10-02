@@ -1,5 +1,25 @@
 {
   "db": "PostgreSQL",
+  "171ac7c866a7d3bf366a07395ee84deb7dd5ac409c14bb5bd74abe9850171954": {
+    "query": "SELECT user_id FROM apollo.reminders WHERE launch_id = $1",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "user_id",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      },
+      "nullable": [
+        false
+      ]
+    }
+  },
   "1c913927d614bebf4ace3340d5189911e415f11afc51c0eca356b8cf6f4b36f9": {
     "query": "SELECT * FROM apollo.guilds",
     "describe": {
@@ -30,6 +50,71 @@
       ]
     }
   },
+  "2e2166a0aafbd70d5bde9d9fd1b37c5e15fdf9214a3fb48d7443837bb2779d32": {
+    "query": "SELECT dispatched, timestamp FROM apollo.launches WHERE launch_id = $1 AND dispatched = true",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "dispatched",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 1,
+          "name": "timestamp",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      },
+      "nullable": [
+        false,
+        false
+      ]
+    }
+  },
+  "37acbf4071d747f53e62516b901d2d678509fba9cce382d533ee5e2c9179c484": {
+    "query": "SELECT dispatched, timestamp FROM apollo.launches WHERE launch_id = $1",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "dispatched",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 1,
+          "name": "timestamp",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      },
+      "nullable": [
+        false,
+        false
+      ]
+    }
+  },
+  "5206d2c60158f21f6ad1a0f975962d6f1006f34c9907845f98e264e110df66dd": {
+    "query": "INSERT INTO apollo.launches (launch_id, dispatched, timestamp) VALUES ($1, true, $2) ON CONFLICT (launch_id) DO UPDATE SET timestamp = $2;",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "539f3075886b085d6e8a33a74b21440b4fb6d97ad19b259e5704d0fa89ca2b27": {
     "query": "INSERT INTO apollo.launches (launch_id, dispatched) VALUES ($1, true)",
     "describe": {
@@ -40,6 +125,138 @@
         ]
       },
       "nullable": []
+    }
+  },
+  "58130ff9ca88874cf3f92c708d36aecf08f065c1988e216a0c3a788a3867aef8": {
+    "query": "UPDATE apollo.guilds SET active = false WHERE guild_id = $1",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "585008cd20c05f469cd1279c6bbbe053f66f78e25e2da83b7b1d974842316649": {
+    "query": "INSERT INTO apollo.reminders (user_id, launch_id) VALUES ($1, $2)",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int4"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "738433d7d8a302ae480cdf34f31ce4f34a68a32d97d2112add1a1659ce7ee184": {
+    "query": "INSERT INTO apollo.guilds (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2, active = true",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "78f70a999969b1267853cc20810452d8d7053d14c92439ec798110973728fd9f": {
+    "query": "INSERT INTO apollo.reminders (user_id, launch_id, active) VALUES ($1, $2, true)",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int4"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "86e8b2dfdb6a286f6f92862f263f89cd8e0e3cc478567a626d9e86794e0a6ca2": {
+    "query": "UPDATE apollo.reminders SET active = false WHERE launch_id = $1",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "982a74f0ce6a0497344c95770b7e8531aa8121b6dec0717003bf10856172625d": {
+    "query": "SELECT * FROM apollo.guilds WHERE active = true",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "guild_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "channel_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 2,
+          "name": "active",
+          "type_info": "Bool"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false
+      ]
+    }
+  },
+  "d65e391092aa6e2be032528ec0a894b685cc8ceaf966976e191ee9c3bf17f914": {
+    "query": "SELECT * FROM apollo.reminders WHERE user_id = $1 AND launch_id = $2",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "reminder_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "user_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 2,
+          "name": "launch_id",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 3,
+          "name": "active",
+          "type_info": "Bool"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int4"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        true,
+        false
+      ]
     }
   },
   "e47b03706be3a1a5b801aa5bbfd7ae17c7c80fdf5308bd0d6817563c992e1141": {
@@ -60,6 +277,32 @@
       "nullable": [
         false
       ]
+    }
+  },
+  "eb28a6282a84406e177ef7e52f6e4f600321e095d7c2066e43d6569e22942f3a": {
+    "query": "DELETE FROM apollo.reminders WHERE user_id = $1 AND launch_id = $2",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int4"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "ef27e703a0f53004aa0ab0df821f6d72164257921fd09e0ef7e07e3b8e983f79": {
+    "query": "INSERT INTO apollo.guilds (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": []
     }
   }
 }

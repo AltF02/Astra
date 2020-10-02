@@ -11,6 +11,7 @@ pub struct Handler {
     pub(crate) run_loops: Mutex<bool>,
 }
 
+#[allow(unused_must_use)]
 #[async_trait]
 impl EventHandler for Handler {
     async fn cache_ready(&self, ctx: Context, _guilds: Vec<GuildId>) {
@@ -29,6 +30,26 @@ impl EventHandler for Handler {
             *self.run_loops.lock().await = false;
         }
     }
+
+    // This is because clion is stupid
+    //noinspection ALL
+    // async fn guild_create(&self, ctx: Context, guild: Guild, _is_new: bool) {
+    //     match guild.system_channel_id {
+    //         Some(channel) => {
+    //             check_msg(channel.send_message(&ctx.http, |e| { e
+    //                 .embed(|e| {e
+    //                     .title("Thanks for adding me!")
+    //                     .description(format!("To configure me run `>set channel #channel`. I will send launch reminders in that channel"))
+    //                     .footer(|f| {f
+    //                         .text(&guild.name)
+    //                         .icon_url(&guild.icon_url().unwrap_or(" ".to_string()))
+    //                     })
+    //                 })
+    //             }).await)
+    //         }
+    //         None => return
+    //     }
+    // }
 
     async fn reaction_add(&self, ctx: Context, reaction: Reaction) {
         if reaction.user_id.unwrap() == ctx.cache.current_user_id().await {

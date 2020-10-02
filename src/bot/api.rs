@@ -1,4 +1,3 @@
-use chrono;
 #[allow(unused_must_use)]
 use serde::{Deserialize, Serialize};
 use std::error::Error;
@@ -127,7 +126,7 @@ pub async fn get_agency<'a, T: Ctx + ?Sized>(ctx: &'a T) -> Result<Agencies, Box
 }
 
 pub async fn get_next_launch<'a>() -> Result<Launches, Box<dyn Error>> {
-    let res = reqwest::get(&format!("{}/launch/next/1", BASE_URL))
+    let res = reqwest::get(&format!("{}/launch/next/5", BASE_URL))
         .await?
         .json::<Launches>()
         .await?;

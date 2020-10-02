@@ -7,14 +7,21 @@ use serenity::{
     model::channel::Message,
     prelude::*,
 };
-use serenity::model::guild::Role;
 use serenity::framework::standard::Args;
+use crate::services::ConnectionPool;
 
 #[group()]
 #[prefixes("set", "config", "update")]
-#[commands(ping)]
-#[required_permissions(MANAGE_GUILD)]
+#[commands(ping, channel)]
+#[default_command(config_info)]
+#[required_permissions(MANAGE_CHANNELS)]
 pub struct Config;
+
+#[command]
+async fn config_info(ctx: &Context, msg: &Message) -> CommandResult {
+    reply(&ctx, &msg, &String::from("Pong!")).await;
+    Ok(())
+}
 
 #[command]
 async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
@@ -28,15 +35,41 @@ async fn channel(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult 
         Ok(arg) => match parse_channel(ctx, arg).await {
             Some(r) => r,
             None => {
-                reply(ctx, msg, "Unable to locate channel").await;
+                msg.reply(ctx, "Unable to locate channel").await?;
                 return Ok(());
             }
         },
         Err(_e) => {
-            msg.reply(ctx, "No channel provided").await;
-            return Ok(())
+            let pool = {
+                let data = ctx.data.read().await;
+                data.get::<ConnectionPool>().unwrap().clone()
+            };
+            let guild_id = msg.guild_id.unwrap().0 as i64;
+
+            sqlx::query!(
+                "UPDATE apollo.guilds SET active = false WHERE guild_id = $1",guild_id )
+                .execute(&pool)
+                .await?;
+
+            msg.reply(ctx, "Disabled apollo reminders for this guild").await?;
+            return Ok(()) // TODO Add remove channel
         },
     };
-    msg.reply(ctx, format!("{}", channel.id())).await;
+
+    let pool = {
+        let data = ctx.data.read().await;
+        data.get::<ConnectionPool>().unwrap().clone()
+    };
+
+    let guild_id = msg.guild_id.unwrap().0 as i64;
+    let channel_id = channel.id().0 as i64;
+
+    sqlx::query!(
+    "INSERT INTO apollo.guilds (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2, active = true",
+        guild_id, channel_id)
+            .execute(&pool)
+            .await?;
+
+    msg.reply(ctx, format!("Set the channel to {}", channel.mention())).await?;
     Ok(())
 }
