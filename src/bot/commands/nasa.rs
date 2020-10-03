@@ -30,7 +30,7 @@ async fn daily(ctx: &Context, msg: &Message) -> CommandResult {
     let config = data.get::<Config>().unwrap();
 
     let res = reqwest::get(&*format!(
-        "https://api.nasa.gov/planetary/apod?api_key={}&date=2020-9-14",
+        "https://api.nasa.gov/planetary/apod?api_key={}",
         config.nasa_key
     ))
     .await?;
