@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use std::error::Error;
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct VidURL {

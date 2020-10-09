@@ -3,7 +3,7 @@ use crate::api::mission::Mission;
 use crate::api::rocket::Rocket;
 use crate::api::url::VidURL;
 use crate::api::BASE_URL;
-use chrono::{DateTime, FixedOffset, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::error::Error;
 

@@ -1,4 +1,3 @@
-use crate::api::launch::Launch;
 use crate::api::traits::ResObject;
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
@@ -20,7 +19,7 @@ pub struct ExpeditionCommon {
     pub name: String,
     pub start: Option<DateTime<FixedOffset>>,
     pub end: Option<DateTime<FixedOffset>>,
-    pub spacestation: SpaceStationCommon
+    pub spacestation: SpaceStationCommon,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -28,11 +27,11 @@ pub struct ApiResult<T: ResObject> {
     pub count: i32,
     pub next: Option<String>,
     pub previous: Option<String>,
-    pub results: Vec<T>
+    pub results: Vec<T>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Status {
     pub id: i8,
-    pub name: String
+    pub name: String,
 }

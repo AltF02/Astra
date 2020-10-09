@@ -4,9 +4,7 @@ use crate::api::BASE_URL;
 use crate::bot::utils::{check_msg, convert_time_into_str, get_channel_forced, get_user_forced};
 use crate::services::database::get_launch_database;
 use crate::services::ConnectionPool;
-use chrono::{DateTime, NaiveDateTime, Utc};
 use log::{debug, error, info};
-use serenity::model::channel::Channel;
 use serenity::model::prelude::ReactionType::Unicode;
 use serenity::prelude::*;
 use std::{error::Error, sync::Arc};
@@ -52,9 +50,9 @@ async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
             None => {
                 if launch_stamp > &now {
                     let dt = next_launch.net;
-                    let tm = (now - Duration::days(1));
+                    let tm = now - Duration::days(1);
 
-                    let remaining_str = convert_time_into_str((dt - now));
+                    let remaining_str = convert_time_into_str(dt - now);
                     if 1 > (dt - tm).num_days() {
                         let guilds =
                             sqlx::query!("SELECT * FROM apollo.guilds WHERE active = true")

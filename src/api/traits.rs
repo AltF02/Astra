@@ -1,7 +1,5 @@
-use serde::{Deserialize, Serialize};
-
-use crate::api::launch::Launch;
 use crate::api::event::Event;
+use crate::api::launch::Launch;
 
 pub trait Ctx: std::fmt::Display {}
 

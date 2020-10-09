@@ -4,9 +4,7 @@ mod services;
 
 use log::{info, warn, LevelFilter};
 // use services::config::Config;
-use crate::api::launch::get_next_launch;
 use crate::services::Config;
-use chrono::{DateTime, Datelike, NaiveDateTime};
 use simple_logger::SimpleLogger;
 
 #[tokio::main]

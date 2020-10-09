@@ -1,11 +1,11 @@
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use chrono::{Date, Utc, DateTime};
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Crew {
     pub id: i32,
     pub role: String,
-    pub astronaut: Astronaut
+    pub astronaut: Astronaut,
 }
 
 #[derive(Deserialize, Serialize, Debug)]

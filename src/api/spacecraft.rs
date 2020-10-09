@@ -1,6 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::api::common::Status;
-use chrono::{Date, Utc};
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct SpaceCraft {
@@ -10,7 +9,7 @@ pub struct SpaceCraft {
     pub serial_number: String,
     pub status: Status,
     pub description: String,
-    pub spacecraft_config: SpaceCraftConfig
+    pub spacecraft_config: SpaceCraftConfig,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
