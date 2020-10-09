@@ -12,7 +12,7 @@
       ],
       "parameters": {
         "Left": [
-          "Int4"
+          "Text"
         ]
       },
       "nullable": [
@@ -20,52 +20,19 @@
       ]
     }
   },
-  "2e2166a0aafbd70d5bde9d9fd1b37c5e15fdf9214a3fb48d7443837bb2779d32": {
-    "query": "SELECT dispatched, timestamp FROM apollo.launches WHERE launch_id = $1 AND dispatched = true",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "dispatched",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 1,
-          "name": "timestamp",
-          "type_info": "Int8"
-        }
-      ],
-      "parameters": {
-        "Left": [
-          "Int4"
-        ]
-      },
-      "nullable": [
-        false,
-        false
-      ]
-    }
-  },
-  "5206d2c60158f21f6ad1a0f975962d6f1006f34c9907845f98e264e110df66dd": {
-    "query": "INSERT INTO apollo.launches (launch_id, dispatched, timestamp) VALUES ($1, true, $2) ON CONFLICT (launch_id) DO UPDATE SET timestamp = $2;",
+  "1c49ce24cda135321490774e9a818dd42cf1031d670eebc8e9874a74e0905383": {
+    "query": "INSERT INTO apollo.launches (launch_id, name, net, tbd, vid_url, image_url, dispatched) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (launch_id) DO UPDATE SET net = $3, tbd = $4, vid_url = $5, dispatched = $7;",
     "describe": {
       "columns": [],
       "parameters": {
         "Left": [
-          "Int4",
-          "Int8"
-        ]
-      },
-      "nullable": []
-    }
-  },
-  "58130ff9ca88874cf3f92c708d36aecf08f065c1988e216a0c3a788a3867aef8": {
-    "query": "UPDATE apollo.guilds SET active = false WHERE guild_id = $1",
-    "describe": {
-      "columns": [],
-      "parameters": {
-        "Left": [
-          "Int8"
+          "Text",
+          "Text",
+          "Timestamptz",
+          "Bool",
+          "Text",
+          "Text",
+          "Bool"
         ]
       },
       "nullable": []
@@ -78,33 +45,7 @@
       "parameters": {
         "Left": [
           "Int8",
-          "Int4"
-        ]
-      },
-      "nullable": []
-    }
-  },
-  "6358101b2bc2e6bb76a3be9c86c150526c2e12cf7c4a5264b16cc820b4bc2a8f": {
-    "query": "UPDATE apollo.launches SET timestamp = $1, dispatched = false WHERE launch_id = $2",
-    "describe": {
-      "columns": [],
-      "parameters": {
-        "Left": [
-          "Int8",
-          "Int4"
-        ]
-      },
-      "nullable": []
-    }
-  },
-  "738433d7d8a302ae480cdf34f31ce4f34a68a32d97d2112add1a1659ce7ee184": {
-    "query": "INSERT INTO apollo.guilds (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2, active = true",
-    "describe": {
-      "columns": [],
-      "parameters": {
-        "Left": [
-          "Int8",
-          "Int8"
+          "Text"
         ]
       },
       "nullable": []
@@ -140,14 +81,40 @@
       ]
     }
   },
-  "aac54d6902adeaee1321cbc41029db397e070d696440eb8b75e47bd7590e394a": {
-    "query": "INSERT INTO apollo.launches (launch_id, dispatched, timestamp) VALUES ($1, true, $2) ON CONFLICT (launch_id) DO UPDATE SET timestamp = $2, dispatched = true;",
+  "b00b699aee10a73a9e8ad42bc721909ab4dc0b637469915053d0080e51cc1ab2": {
+    "query": "SELECT dispatched, net FROM apollo.launches WHERE launch_id = $1 AND dispatched = true",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "dispatched",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 1,
+          "name": "net",
+          "type_info": "Timestamptz"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      },
+      "nullable": [
+        false,
+        false
+      ]
+    }
+  },
+  "b8863d9563ae655118a63524ed4299941fee28a4ef7423b428087a4450087f54": {
+    "query": "UPDATE apollo.launches SET net = $1, dispatched = false WHERE launch_id = $2",
     "describe": {
       "columns": [],
       "parameters": {
         "Left": [
-          "Int4",
-          "Int8"
+          "Timestamptz",
+          "Text"
         ]
       },
       "nullable": []
@@ -164,25 +131,25 @@
         },
         {
           "ordinal": 1,
-          "name": "user_id",
-          "type_info": "Int8"
+          "name": "launch_id",
+          "type_info": "Text"
         },
         {
           "ordinal": 2,
-          "name": "launch_id",
-          "type_info": "Int4"
+          "name": "user_id",
+          "type_info": "Int8"
         }
       ],
       "parameters": {
         "Left": [
           "Int8",
-          "Int4"
+          "Text"
         ]
       },
       "nullable": [
         false,
         false,
-        true
+        false
       ]
     }
   },
@@ -193,7 +160,7 @@
       "parameters": {
         "Left": [
           "Int8",
-          "Int4"
+          "Text"
         ]
       },
       "nullable": []

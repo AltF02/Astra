@@ -1,15 +1,17 @@
-use crate::api::common::{Status, ApiResult};
-use chrono::{DateTime, FixedOffset, Utc};
-use crate::api::BASE_URL;
-use std::error::Error;
-use serde::{Deserialize, Serialize};
+use crate::api::common::{ApiResult, Status};
+use crate::api::mission::Mission;
 use crate::api::rocket::Rocket;
+use crate::api::url::VidURL;
+use crate::api::BASE_URL;
+use chrono::{DateTime, FixedOffset, Utc};
+use serde::{Deserialize, Serialize};
+use std::error::Error;
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Launch {
     pub id: String,
     pub url: String,
-    pub launch_library_id: i32,
+    // pub launch_library_id: i32,
     pub slug: String,
     pub name: String,
     pub status: Status,
@@ -19,21 +21,25 @@ pub struct Launch {
     pub inhold: bool,
     pub tbdtime: bool,
     pub tbddate: bool,
-    pub probability: i8,
+    pub probability: Option<i8>,
     pub holdreason: Option<String>,
     pub failreason: Option<String>,
     pub rocket: Rocket,
-    #[serde(alias = "infoURLs")]
-    pub info_urls: Vec<String>,
+    pub mission: Option<Mission>,
+    // #[serde(alias = "infoURLs")]
+    // pub info_urls: Vec<String>,
     #[serde(alias = "vidURLs")]
-    pub vid_urls: Vec<String>,
+    pub vid_urls: Vec<VidURL>,
 }
 
 pub async fn get_next_launch<'a>() -> Result<ApiResult<Launch>, Box<dyn Error>> {
-    let res = reqwest::get(&format!("{}/launch/upcoming/?format=json&mode=detailed", BASE_URL))
-        .await?
-        .json::<ApiResult<Launch>>()
-        .await?;
+    let res = reqwest::get(&format!(
+        "{}/launch/upcoming/?format=json&mode=detailed",
+        BASE_URL
+    ))
+    .await?
+    .json::<ApiResult<Launch>>()
+    .await?;
 
     Ok(res)
 }

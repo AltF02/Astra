@@ -1,10 +1,10 @@
 use crate::bot::loops::launches_loop;
-use log::info;
-use serenity::{async_trait, model::prelude::*, prelude::*};
-use std::sync::Arc;
 use crate::bot::utils::check_msg;
 use crate::services::ConnectionPool;
+use log::info;
 use log::*;
+use serenity::{async_trait, model::prelude::*, prelude::*};
+use std::sync::Arc;
 
 #[derive(Debug)]
 pub struct Handler {
@@ -56,21 +56,26 @@ impl EventHandler for Handler {
             return;
         }
 
-        let message = match ctx.cache.message(reaction.channel_id, reaction.message_id).await {
+        let message = match ctx
+            .cache
+            .message(reaction.channel_id, reaction.message_id)
+            .await
+        {
             Some(message) => message,
-            None => reaction.message(&ctx.http).await.unwrap()
+            None => reaction.message(&ctx.http).await.unwrap(),
         };
 
         if message.author.id != ctx.cache.current_user_id().await {
             return;
         }
 
-        let text_id = &message.embeds[0].footer.as_ref().unwrap().text;
-        let id = text_id.parse::<i32>().unwrap();
+        let embed = &message.embeds[0];
+        let id = &embed.footer.as_ref().unwrap().text;
+        let name = &embed.title.as_ref().unwrap();
 
         let user = match ctx.cache.user(reaction.user_id.unwrap()).await {
             Some(user) => user,
-            None => reaction.user(&ctx.http).await.unwrap()
+            None => reaction.user(&ctx.http).await.unwrap(),
         };
 
         let pool = {
@@ -79,46 +84,62 @@ impl EventHandler for Handler {
         };
 
         reaction.delete(&ctx.http).await;
-        let db_user = sqlx::query!("SELECT * FROM apollo.reminders WHERE user_id = $1 AND launch_id = $2", &(user.id.0 as i64), id)
-            .fetch_optional(&pool)
-            .await;
+        let db_user = sqlx::query!(
+            "SELECT * FROM apollo.reminders WHERE user_id = $1 AND launch_id = $2",
+            &(user.id.0 as i64),
+            id,
+        )
+        .fetch_optional(&pool)
+        .await;
 
         if let Err(e) = db_user {
             error!("Failed to query, {}", e);
-            return
+            return;
         }
 
         let db_user = db_user.unwrap();
         match db_user {
             Some(_) => {
-                check_msg(user.dm(&ctx.http, |m| { m
-                    .embed(|e| { e
-                        .title("Reminder Removal")
-                        .description(format!("I will stop reminding you for the launch with ID: **{}**", &id))
-                        // .timestamp(chrono::offset::Utc::now())
-                        .colour(0xe6e600)
+                check_msg(
+                    user.dm(&ctx.http, |m| {
+                        m.embed(|e| {
+                            e.title("Reminder Removal")
+                                .description(format!(
+                                    "I will stop reminding you for launch **{}**",
+                                    &name
+                                ))
+                                // .timestamp(chrono::offset::Utc::now())
+                                .colour(0xe6e600)
+                        })
                     })
-                }).await);
-                sqlx::query!("DELETE FROM apollo.reminders WHERE user_id = $1 AND launch_id = $2", &(user.id.0 as i64), &id)
-                    .execute(&pool)
-                    .await;
+                    .await,
+                );
+                sqlx::query!(
+                    "DELETE FROM apollo.reminders WHERE user_id = $1 AND launch_id = $2",
+                    &(user.id.0 as i64),
+                    &id
+                )
+                .execute(&pool)
+                .await;
             }
             None => {
                 check_msg(user.dm(&ctx.http, |m| { m
                     .embed(|e| { e
                         .title("Reminder Confirmation")
-                        .description(format!("I will remind about the launch with ID: **{}**. If you want to stop me from reminding you, hit the bell emoji again", &id))
+                        .description(format!("I will remind about launch **{}**. If you want to stop me from reminding you, hit the bell emoji again", &name))
                         // .timestamp(chrono::offset::Utc::now())
                         .colour(0x15c400)
                     })
                 }).await);
-                sqlx::query!("INSERT INTO apollo.reminders (user_id, launch_id) VALUES ($1, $2)", &(user.id.0 as i64), &id)
-                    .execute(&pool)
-                    .await;
+                sqlx::query!(
+                    "INSERT INTO apollo.reminders (user_id, launch_id) VALUES ($1, $2)",
+                    &(user.id.0 as i64),
+                    &id
+                )
+                .execute(&pool)
+                .await;
             }
         }
-
-
     }
 
     async fn ready(&self, ctx: Context, ready: Ready) {

@@ -13,3 +13,4 @@ Cargo.lock
 # Custom Directories
 .idea/
 config.yml
+.env
