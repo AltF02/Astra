@@ -11,7 +11,7 @@ use simple_logger::SimpleLogger;
 async fn main() {
     #[cfg(debug_assertions)]
     SimpleLogger::new()
-        .with_level(LevelFilter::Info)
+        .with_level(LevelFilter::Error)
         .init()
         .unwrap();
 

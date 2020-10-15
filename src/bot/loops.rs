@@ -48,6 +48,7 @@ async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
                 }
             }
             None => {
+                println!("{}", next_launch.name);
                 if launch_stamp > &now {
                     let dt = next_launch.net;
                     let tm = now - Duration::days(1);

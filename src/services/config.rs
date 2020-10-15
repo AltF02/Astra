@@ -14,6 +14,7 @@ pub struct Config {
     pub prefix: String,
     pub db_uri: String,
     pub nasa_key: String,
+    pub log_channel_id: u64,
 }
 
 impl Config {
@@ -29,6 +30,7 @@ impl Config {
                         prefix: prompt("Bot Prefix"),
                         db_uri: prompt("Database Uri"),
                         nasa_key: prompt("Nasa api key"),
+                        log_channel_id: 0,
                     }
                 } else {
                     conf = Config {
@@ -36,6 +38,7 @@ impl Config {
                         prefix: String::from(";"),
                         db_uri: String::new(),
                         nasa_key: String::new(),
+                        log_channel_id: 0,
                     };
                 }
                 conf.save();

@@ -1,5 +1,6 @@
 use crate::bot::utils::reply;
 use crate::services::Config;
+use regex::internal::Input;
 use serenity::{
     framework::standard::{
         macros::{command, group},
@@ -10,7 +11,7 @@ use serenity::{
 };
 
 #[group()]
-#[commands(ping, prefix)]
+#[commands(ping, prefix, guilds)]
 pub struct Commands;
 
 #[command]
@@ -42,5 +43,18 @@ async fn prefix(ctx: &Context, msg: &Message) -> CommandResult {
         );
     };
 
+    Ok(())
+}
+
+#[command]
+async fn guilds(ctx: &Context, msg: &Message) -> CommandResult {
+    msg.reply(
+        &ctx,
+        format!(
+            "I've been added to **{}** Guilds",
+            ctx.cache.guilds().await.len()
+        ),
+    )
+    .await?;
     Ok(())
 }
