@@ -52,6 +52,7 @@ pub async fn start(config: Config) {
             c.prefix(&config.prefix);
             c.allow_dm(true);
             c.case_insensitivity(true);
+            c.ignore_bots(false);
             return c;
         })
         .group(&commands::general::COMMANDS_GROUP)

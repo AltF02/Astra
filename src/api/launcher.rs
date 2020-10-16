@@ -9,7 +9,7 @@ pub struct LauncherCommon {
 #[derive(Deserialize, Serialize, Debug)]
 pub struct LauncherCommonConfiguration {
     pub id: i32,
-    pub launch_library_id: i32,
+    pub launch_library_id: Option<i32>,
     pub url: String,
     pub name: String,
     pub family: String,
@@ -20,7 +20,7 @@ pub struct LauncherCommonConfiguration {
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Launcher {
     pub id: i32,
-    pub launch_library_id: i32,
+    pub launch_library_id: Option<i32>,
     pub url: String,
     pub name: String,
     pub description: String,
@@ -35,8 +35,8 @@ pub struct Launcher {
     pub diameter: f32,
     pub maiden_flight: String,
     pub launch_mass: i32,
-    pub leo_capacity: i32,
-    pub gto_capacity: i32,
+    pub leo_capacity: Option<i32>,
+    pub gto_capacity: Option<i32>,
     pub to_thrust: i32,
     pub image_url: String,
     pub wiki_url: String,
@@ -46,4 +46,3 @@ pub struct Launcher {
     pub failed_launches: i32,
     pub pending_launches: i32,
 }
-

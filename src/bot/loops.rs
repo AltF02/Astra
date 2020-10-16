@@ -16,9 +16,9 @@ async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
         data.get::<ConnectionPool>().unwrap().clone()
     };
 
-    info!("Getting api data: {}", BASE_URL);
+    println!("Getting api data: {}", BASE_URL);
     let next_launches = get_next_launch().await?;
-    info!("Here!");
+    println!("Here!");
     for next_launch in &next_launches.results {
         if next_launch.tbdtime {
             continue;
@@ -74,7 +74,7 @@ async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
                                         .title(&next_launch.name)
                                         .description(format!("> {}", if let Some(mission) = &next_launch.mission {&mission.description} else {"No description found :("}))
                                         .fields(vec![
-                                            ("Rocket", format!("➤ Name: **{}**\n➤ Probability of launch: **{}**", &next_launch.rocket.configuration.name, if let None = next_launch.probability {"Unknown".to_string()} else {format!("{}%", &next_launch.probability.unwrap())}), false),
+                                            ("Rocket", format!("➤ Name: **{}**\n➤ Probability of launch: **{}**", &next_launch.rocket.configuration.name, if let None = next_launch.probability {"Unknown".to_string()} else {if next_launch.probability.unwrap() == -1 {"Unknown".to_string()} else {format!("{}%", &next_launch.probability.unwrap())}}), false),
                                             // ("Launch Provider",
                                             //  format!("➤ Name: **{}**\n ➤ Country: **{}**",
                                             //          &next_launch.lsp.name,
