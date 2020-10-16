@@ -1,14 +1,23 @@
+mod api;
 mod bot;
 mod services;
 
 use log::{info, warn, LevelFilter};
-use services::config::Config;
+// use services::config::Config;
+use crate::services::Config;
 use simple_logger::SimpleLogger;
 
 #[tokio::main]
 async fn main() {
+    #[cfg(debug_assertions)]
     SimpleLogger::new()
-        .with_level(LevelFilter::Info)
+        .with_level(LevelFilter::Error)
+        .init()
+        .unwrap();
+
+    #[cfg(not(debug_assertions))]
+    SimpleLogger::new()
+        .with_level(LevelFilter::Error)
         .init()
         .unwrap();
 

@@ -1,10 +1,10 @@
-# Rust discord template
-This template is configured with postgres and serenity.
+# Apollo
+Apollo is a discord bot written in rust to keep you reminded on rocket launches and more! An always online bot is available **[here](https://discord.com/oauth2/authorize?client_id=755775587716563015&permissions=355328&scope=bot)**
 
 ## How to start
 Clone the repo with 
 ```shell script
-git clone https://github.com/DankDumpster/rust-discord-bot-template
+git clone https://github.com/DankDumpster/apollo.git
 ```
 
 Now we need to setup sqlx and we do that by doing
@@ -12,11 +12,11 @@ Now we need to setup sqlx and we do that by doing
 cargo install --version=0.1.0-beta.1 sqlx-cli --no-default-features --features postgres
 ```
 
-Before we run sqlx we need to set the database environment variable temporarily, this is different for most shells
+Before we run we need to set the database environment variable temporarily, this is different for most shells. This is needed for the library sqlx.
 
 #### cmd
 ```shell script
-setx DATABASE_URL = "postgres://postgres:postgres@localhost/postgres"
+set DATABASE_URL=postgres://postgres:postgres@localhost/postgres
 ```
 #### fish
 ```shell script
@@ -26,7 +26,7 @@ etc...
 
 Now once that's done we're going to run, this will take some time as its compiling everything
 ```shell script
-cargo sqlx prepare
+cargo run
 ```
 
 NOTE: this will panic
@@ -35,18 +35,14 @@ This will ask you to enter each of the configuration values. If you wish edit th
 If anything goes wrong for any reason you can manually make a config.yml in the root with this:
 ```yaml
 ---
-token: ""
-prefix: ;
-db_uri: "postgres://postgres:postgres@localhost/postgres"
+token: 
+prefix: ";"
+db_uri: "postgres://postgres:password@localhost/postgres"
+nasa_key: 
+log_channel_id: 
 ```
 
 Now run it again and it should work
 ```shell script 
 cargo run
 ```
-
-## Notes
-### Custom Config Location
-To set a custom config location, set the enviroment variable "CONFIG_PATH" and point it to a file.
-
-###### Massive thanks to [dylan](https://github.com/dylhack) for the config function
