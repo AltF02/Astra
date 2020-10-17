@@ -16,9 +16,7 @@ async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
         data.get::<ConnectionPool>().unwrap().clone()
     };
 
-    println!("Getting api data: {}", BASE_URL);
     let next_launches = get_next_launch().await?;
-    println!("Here!");
     for next_launch in &next_launches.results {
         if next_launch.tbdtime {
             continue;
@@ -48,13 +46,11 @@ async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
                 }
             }
             None => {
-                println!("{}", next_launch.name);
                 if launch_stamp > &now {
                     let dt = next_launch.net;
-                    let tm = now - Duration::days(1);
 
                     let remaining_str = convert_time_into_str(dt - now);
-                    if 1 > (dt - tm).num_days() {
+                    if 24 >= (dt - now).num_hours() {
                         let guilds =
                             sqlx::query!("SELECT * FROM apollo.guilds WHERE active = true")
                                 .fetch_all(&pool)

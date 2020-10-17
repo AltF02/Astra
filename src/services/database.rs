@@ -40,5 +40,11 @@ pub(crate) async fn connect(
 }
 
 pub(crate) async fn get_launch_database(pool: &PgPool) -> Vec<DBLaunch> {
-    sqlx::query_as!(DBLaunch, "SELECT * FROM apollo.launches WHERE net < 'tomorrow'::timestamp with time zone AND status = 1;").fetch_all(pool).await.unwrap()
+    sqlx::query_as!(
+        DBLaunch,
+        "SELECT * FROM apollo.launches WHERE net <= (now() + interval '24 hours') AND status = 1;"
+    )
+    .fetch_all(pool)
+    .await
+    .unwrap()
 }
