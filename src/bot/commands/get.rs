@@ -1,4 +1,3 @@
-use crate::bot::utils::check_msg;
 use serenity::framework::standard::Args;
 use serenity::{
     framework::standard::{
@@ -15,7 +14,7 @@ use serenity::{
 pub struct Get;
 
 #[command]
-async fn rocket(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
+async fn rocket(ctx: &Context, msg: &Message, _args: Args) -> CommandResult {
     // let rocket = match args.remains() {
     //     Some(rocket) => rocket,
     //     None => {

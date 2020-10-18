@@ -1,7 +1,7 @@
-use chrono::{DateTime, FixedOffset};
+use crate::api::common::{ApiResult, SpaceStationCommon};
 use crate::api::launch::Launch;
 use crate::api::BASE_URL;
-use crate::api::common::{SpaceStationCommon, ApiResult};
+use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 use std::error::Error;
 
@@ -22,6 +22,7 @@ pub struct Event {
     pub spacestations: Option<Vec<SpaceStationCommon>>,
 }
 
+#[allow(dead_code)]
 pub async fn get_next_event() -> Result<ApiResult<Event>, Box<dyn Error>> {
     let res = reqwest::get(&format!("{}/event/upcoming/?format=json", BASE_URL))
         .await?

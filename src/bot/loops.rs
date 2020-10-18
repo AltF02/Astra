@@ -1,10 +1,9 @@
 use crate::api::launch::get_next_launch;
 use crate::api::url::VidURL;
-use crate::api::BASE_URL;
 use crate::bot::utils::{check_msg, convert_time_into_str, get_channel_forced, get_user_forced};
 use crate::services::database::get_launch_database;
 use crate::services::ConnectionPool;
-use log::{debug, error, info};
+use log::{debug, error};
 use serenity::model::prelude::ReactionType::Unicode;
 use serenity::prelude::*;
 use std::{error::Error, sync::Arc};
@@ -43,6 +42,8 @@ async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
                         next_launch.net, next_launch.id)
                         .execute(&pool)
                         .await?;
+                } else {
+                    dispatched = true;
                 }
             }
             None => {

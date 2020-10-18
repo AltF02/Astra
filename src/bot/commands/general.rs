@@ -1,6 +1,5 @@
 use crate::bot::utils::reply;
 use crate::services::Config;
-use regex::internal::Input;
 use serenity::{
     framework::standard::{
         macros::{command, group},
