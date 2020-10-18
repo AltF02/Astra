@@ -1,5 +1,24 @@
 {
   "db": "PostgreSQL",
+  "12a2c8f9ef091dea0e334b5e1c9061e7a2b62e72e5b76854cdc5c60b9c875f99": {
+    "query": "INSERT INTO apollo.launches (launch_id, name, net, tbd, vid_url, image_url, dispatched, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT (launch_id) DO UPDATE SET net = $3, tbd = $4, vid_url = $5, dispatched = $7, status = $8;",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Timestamptz",
+          "Bool",
+          "Text",
+          "Text",
+          "Bool",
+          "Int4"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "171ac7c866a7d3bf366a07395ee84deb7dd5ac409c14bb5bd74abe9850171954": {
     "query": "SELECT user_id FROM apollo.reminders WHERE launch_id = $1",
     "describe": {
@@ -20,19 +39,13 @@
       ]
     }
   },
-  "1c49ce24cda135321490774e9a818dd42cf1031d670eebc8e9874a74e0905383": {
-    "query": "INSERT INTO apollo.launches (launch_id, name, net, tbd, vid_url, image_url, dispatched) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (launch_id) DO UPDATE SET net = $3, tbd = $4, vid_url = $5, dispatched = $7;",
+  "58130ff9ca88874cf3f92c708d36aecf08f065c1988e216a0c3a788a3867aef8": {
+    "query": "UPDATE apollo.guilds SET active = false WHERE guild_id = $1",
     "describe": {
       "columns": [],
       "parameters": {
         "Left": [
-          "Text",
-          "Text",
-          "Timestamptz",
-          "Bool",
-          "Text",
-          "Text",
-          "Bool"
+          "Int8"
         ]
       },
       "nullable": []
@@ -46,6 +59,19 @@
         "Left": [
           "Int8",
           "Text"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "738433d7d8a302ae480cdf34f31ce4f34a68a32d97d2112add1a1659ce7ee184": {
+    "query": "INSERT INTO apollo.guilds (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2, active = true",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8"
         ]
       },
       "nullable": []
@@ -120,6 +146,66 @@
       "nullable": []
     }
   },
+  "bd578babf86f4408f16812a11ec00c80fecba04eb5a79198ebcce6c2752219c0": {
+    "query": "SELECT * FROM apollo.launches WHERE net < 'tomorrow'::timestamp with time zone AND status = 1;",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "launch_id",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 1,
+          "name": "name",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "net",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 3,
+          "name": "tbd",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 4,
+          "name": "vid_url",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 5,
+          "name": "image_url",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 6,
+          "name": "dispatched",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 7,
+          "name": "status",
+          "type_info": "Int4"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false
+      ]
+    }
+  },
   "d65e391092aa6e2be032528ec0a894b685cc8ceaf966976e191ee9c3bf17f914": {
     "query": "SELECT * FROM apollo.reminders WHERE user_id = $1 AND launch_id = $2",
     "describe": {
@@ -148,6 +234,66 @@
       },
       "nullable": [
         false,
+        false,
+        false
+      ]
+    }
+  },
+  "e203d577aacb5f7f4ed166e345cf12d40dba74abbeaeaf2db33b0a79ca0341da": {
+    "query": "SELECT * FROM apollo.launches WHERE net <= (now() + interval '24 hours') AND status = 1;",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "launch_id",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 1,
+          "name": "name",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "net",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 3,
+          "name": "tbd",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 4,
+          "name": "vid_url",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 5,
+          "name": "image_url",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 6,
+          "name": "dispatched",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 7,
+          "name": "status",
+          "type_info": "Int4"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
         false,
         false
       ]
