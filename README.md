@@ -1,10 +1,10 @@
-# Apollo
-Apollo is a discord bot written in rust to keep you reminded on rocket launches and more! An always online bot is available **[here](https://discord.com/oauth2/authorize?client_id=755775587716563015&permissions=355328&scope=bot)**
+# Astra
+Astra is a discord bot written in rust to keep you reminded on rocket launches and more! An always online bot is available **[here](https://discord.com/oauth2/authorize?client_id=755775587716563015&permissions=355328&scope=bot)**
 
 ## How to start
 Clone the repo with 
 ```shell script
-git clone https://github.com/DankDumpster/apollo.git
+git clone https://github.com/DankDumpster/astra.git
 ```
 
 Now we need to setup sqlx and we do that by doing
