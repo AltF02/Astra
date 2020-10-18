@@ -1,5 +1,5 @@
 [package]
-name = "apollo"
+name = "astra"
 version = "0.2.2"
 authors = ["Matthew <staalkoper@gmail.com>"]
 edition = "2018"
