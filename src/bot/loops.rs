@@ -42,9 +42,8 @@ async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
                         next_launch.net, next_launch.id)
                         .execute(&pool)
                         .await?;
-                } else {
-                    dispatched = true;
                 }
+                return Ok(());
             }
             None => {
                 if launch_stamp > &now {
