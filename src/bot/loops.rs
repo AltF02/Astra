@@ -137,7 +137,7 @@ async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
 
         let msg = match diff.num_minutes() {
             10 => "10 Minutes until launch!",
-            30 => "30 Minutes until launch! (By now the stream will probably live)",
+            30 => "30 Minutes until launch! (By now the stream will probably be live)",
             60 => "60 Minutes until launch!",
             _ => continue,
         };
