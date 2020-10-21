@@ -1,6 +1,6 @@
 [package]
 name = "astra"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Matthew <staalkoper@gmail.com>"]
 edition = "2018"
 readme = "README.md"

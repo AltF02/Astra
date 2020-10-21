@@ -41,13 +41,13 @@ async fn channel(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult 
             let guild_id = msg.guild_id.unwrap().0 as i64;
 
             sqlx::query!(
-                "UPDATE apollo.guilds SET active = false WHERE guild_id = $1",
+                "UPDATE astra.guilds SET active = false WHERE guild_id = $1",
                 guild_id
             )
             .execute(&pool)
             .await?;
 
-            msg.reply(ctx, "Disabled apollo reminders for this guild")
+            msg.reply(ctx, "Disabled astra reminders for this guild")
                 .await?;
             return Ok(()); // TODO Add remove channel
         }
@@ -62,7 +62,7 @@ async fn channel(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult 
     let channel_id = channel.id().0 as i64;
 
     sqlx::query!(
-    "INSERT INTO apollo.guilds (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2, active = true",
+    "INSERT INTO astra.guilds (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2, active = true",
         guild_id, channel_id)
             .execute(&pool)
             .await?;

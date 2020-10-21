@@ -117,7 +117,7 @@ impl EventHandler for Handler {
 
         reaction.delete(&ctx.http).await;
         let db_user = sqlx::query!(
-            "SELECT * FROM apollo.reminders WHERE user_id = $1 AND launch_id = $2",
+            "SELECT * FROM astra.reminders WHERE user_id = $1 AND launch_id = $2",
             &(user.id.0 as i64),
             id,
         )
@@ -147,7 +147,7 @@ impl EventHandler for Handler {
                     .await,
                 );
                 sqlx::query!(
-                    "DELETE FROM apollo.reminders WHERE user_id = $1 AND launch_id = $2",
+                    "DELETE FROM astra.reminders WHERE user_id = $1 AND launch_id = $2",
                     &(user.id.0 as i64),
                     &id
                 )
@@ -164,7 +164,7 @@ impl EventHandler for Handler {
                     })
                 }).await);
                 sqlx::query!(
-                    "INSERT INTO apollo.reminders (user_id, launch_id) VALUES ($1, $2)",
+                    "INSERT INTO astra.reminders (user_id, launch_id) VALUES ($1, $2)",
                     &(user.id.0 as i64),
                     &id
                 )

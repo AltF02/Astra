@@ -24,7 +24,7 @@ async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
         let mut dispatched: bool = false;
 
         let launch_db = sqlx::query!(
-        "SELECT dispatched, net FROM apollo.launches WHERE launch_id = $1 AND dispatched = true",
+        "SELECT dispatched, net FROM astra.launches WHERE launch_id = $1 AND dispatched = true",
             next_launch.id
         )
         .fetch_optional(&pool)
@@ -38,7 +38,7 @@ async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
             Some(launch) => {
                 if next_launch.net != launch.net {
                     sqlx::query!(
-                        "UPDATE apollo.launches SET net = $1, dispatched = false WHERE launch_id = $2",
+                        "UPDATE astra.launches SET net = $1, dispatched = false WHERE launch_id = $2",
                         next_launch.net, next_launch.id)
                         .execute(&pool)
                         .await?;
@@ -52,7 +52,7 @@ async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
                     let remaining_str = convert_time_into_str(dt - now);
                     if 24 >= (dt - now).num_hours() {
                         let guilds =
-                            sqlx::query!("SELECT * FROM apollo.guilds WHERE active = true")
+                            sqlx::query!("SELECT * FROM astra.guilds WHERE active = true")
                                 .fetch_all(&pool)
                                 .await?;
 
@@ -109,7 +109,7 @@ async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
             None => None,
         };
         sqlx::query!(
-                "INSERT INTO apollo.launches (launch_id, name, net, tbd, vid_url, image_url, dispatched, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT (launch_id) DO UPDATE SET net = $3, tbd = $4, vid_url = $5, dispatched = $7, status = $8;",
+                "INSERT INTO astra.launches (launch_id, name, net, tbd, vid_url, image_url, dispatched, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT (launch_id) DO UPDATE SET net = $3, tbd = $4, vid_url = $5, dispatched = $7, status = $8;",
                 next_launch.id, next_launch.name, next_launch.net, next_launch.tbdtime, vid_url, next_launch.rocket.configuration.image_url, dispatched, next_launch.status.id as i32)
             .execute(&pool)
             .await?;
@@ -143,7 +143,7 @@ async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
         };
 
         let users = sqlx::query!(
-            "SELECT user_id FROM apollo.reminders WHERE launch_id = $1",
+            "SELECT user_id FROM astra.reminders WHERE launch_id = $1",
             next_launch.launch_id
         )
         .fetch_all(&pool)
