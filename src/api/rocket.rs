@@ -25,7 +25,7 @@ pub struct RocketConfiguration {
     pub max_stage: Option<i8>,
     pub length: f32,
     pub diameter: f32,
-    pub launch_mass: i16,
+    pub launch_mass: Option<i32>,
     pub leo_capacity: Option<i32>,
     pub gto_capacity: Option<i32>,
     pub to_thrust: Option<i32>,
