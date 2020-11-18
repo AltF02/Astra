@@ -1,4 +1,4 @@
-use log::warn;
+use log::{error, warn};
 use regex::Regex;
 use serenity::model::channel::{Channel, Message};
 use serenity::model::user::User;
@@ -17,7 +17,7 @@ pub(crate) async fn reply<T: std::fmt::Display>(ctx: &Context, msg: &Message, co
 
 pub(crate) fn check_msg(result: SerenityResult<Message>) {
     if let Err(why) = result {
-        warn!("Error sending message: {:?}", why);
+        error!("Error sending message: {:?}", why);
         eprintln!("{}", why)
     }
 }
@@ -95,4 +95,18 @@ pub(crate) async fn parse_channel(ctx: &Context, channel_name: String) -> Option
     } else {
         None
     }
+}
+
+pub fn truncate(s: &str, max_chars: usize) -> &str {
+    match s.char_indices().nth(max_chars) {
+        None => s,
+        Some((idx, _)) => &s[..idx],
+    }
+}
+
+
+pub fn truncate_string(s: &mut String, max_chars: usize) {
+    let bytes = truncate(&s, max_chars).len();
+    s.truncate(bytes);
+    s.push_str("...")
 }

@@ -1,5 +1,37 @@
 {
   "db": "PostgreSQL",
+  "027f45235386ee8b55b919b7aaf820c89b470ef6c5abf7e70a23ac5b8858ea63": {
+    "query": "SELECT * FROM astra.guilds WHERE guild_id = $1",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "guild_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "channel_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 2,
+          "name": "active",
+          "type_info": "Bool"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false
+      ]
+    }
+  },
   "08fefb36c8eac555555f5ad01fa382781e71b59677acf28403d44fa3a890fe10": {
     "query": "SELECT * FROM astra.launches WHERE net <= (now() + interval '24 hours') AND status = 1;",
     "describe": {
@@ -56,6 +88,45 @@
         true,
         true,
         false,
+        false
+      ]
+    }
+  },
+  "12a2c8f9ef091dea0e334b5e1c9061e7a2b62e72e5b76854cdc5c60b9c875f99": {
+    "query": "INSERT INTO apollo.launches (launch_id, name, net, tbd, vid_url, image_url, dispatched, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT (launch_id) DO UPDATE SET net = $3, tbd = $4, vid_url = $5, dispatched = $7, status = $8;",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Timestamptz",
+          "Bool",
+          "Text",
+          "Text",
+          "Bool",
+          "Int4"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "171ac7c866a7d3bf366a07395ee84deb7dd5ac409c14bb5bd74abe9850171954": {
+    "query": "SELECT user_id FROM apollo.reminders WHERE launch_id = $1",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "user_id",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      },
+      "nullable": [
         false
       ]
     }
@@ -118,6 +189,31 @@
       "nullable": []
     }
   },
+  "58130ff9ca88874cf3f92c708d36aecf08f065c1988e216a0c3a788a3867aef8": {
+    "query": "UPDATE apollo.guilds SET active = false WHERE guild_id = $1",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "585008cd20c05f469cd1279c6bbbe053f66f78e25e2da83b7b1d974842316649": {
+    "query": "INSERT INTO apollo.reminders (user_id, launch_id) VALUES ($1, $2)",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Text"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "5d4a8a0b97b166fedb7238fc725524d9c7b5dc3a3278495ecf962777c32d8418": {
     "query": "DELETE FROM astra.reminders WHERE user_id = $1 AND launch_id = $2",
     "describe": {
@@ -162,6 +258,19 @@
         false,
         false
       ]
+    }
+  },
+  "738433d7d8a302ae480cdf34f31ce4f34a68a32d97d2112add1a1659ce7ee184": {
+    "query": "INSERT INTO apollo.guilds (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2, active = true",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": []
     }
   },
   "7cb82891f50bea9af38c1c1187fe502962d24ee60c3095b329c340e22bce6ac0": {
@@ -214,6 +323,36 @@
       ]
     }
   },
+  "982a74f0ce6a0497344c95770b7e8531aa8121b6dec0717003bf10856172625d": {
+    "query": "SELECT * FROM apollo.guilds WHERE active = true",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "guild_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "channel_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 2,
+          "name": "active",
+          "type_info": "Bool"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false
+      ]
+    }
+  },
   "a39be920fc7728db32a92b51be4ecfb97afd4a6d00d605930c5a5e6e2894ce6a": {
     "query": "INSERT INTO astra.guilds (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2, active = true",
     "describe": {
@@ -222,6 +361,45 @@
         "Left": [
           "Int8",
           "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "b00b699aee10a73a9e8ad42bc721909ab4dc0b637469915053d0080e51cc1ab2": {
+    "query": "SELECT dispatched, net FROM apollo.launches WHERE launch_id = $1 AND dispatched = true",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "dispatched",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 1,
+          "name": "net",
+          "type_info": "Timestamptz"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      },
+      "nullable": [
+        false,
+        false
+      ]
+    }
+  },
+  "b8863d9563ae655118a63524ed4299941fee28a4ef7423b428087a4450087f54": {
+    "query": "UPDATE apollo.launches SET net = $1, dispatched = false WHERE launch_id = $2",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Timestamptz",
+          "Text"
         ]
       },
       "nullable": []
@@ -240,6 +418,39 @@
       "nullable": []
     }
   },
+  "d65e391092aa6e2be032528ec0a894b685cc8ceaf966976e191ee9c3bf17f914": {
+    "query": "SELECT * FROM apollo.reminders WHERE user_id = $1 AND launch_id = $2",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "reminder_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "launch_id",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "user_id",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Text"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false
+      ]
+    }
+  },
   "e173e23936bd2e40a58fbe0d6bb0b5928ea05a4c130a21d036e1ffce50ca11f0": {
     "query": "UPDATE astra.guilds SET active = false WHERE guild_id = $1",
     "describe": {
@@ -247,6 +458,79 @@
       "parameters": {
         "Left": [
           "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "e203d577aacb5f7f4ed166e345cf12d40dba74abbeaeaf2db33b0a79ca0341da": {
+    "query": "SELECT * FROM apollo.launches WHERE net <= (now() + interval '24 hours') AND status = 1;",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "launch_id",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 1,
+          "name": "name",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "net",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 3,
+          "name": "tbd",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 4,
+          "name": "vid_url",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 5,
+          "name": "image_url",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 6,
+          "name": "dispatched",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 7,
+          "name": "status",
+          "type_info": "Int4"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false
+      ]
+    }
+  },
+  "eb28a6282a84406e177ef7e52f6e4f600321e095d7c2066e43d6569e22942f3a": {
+    "query": "DELETE FROM apollo.reminders WHERE user_id = $1 AND launch_id = $2",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Text"
         ]
       },
       "nullable": []

@@ -60,7 +60,7 @@ pub async fn start(config: Config) {
         .group(&commands::config::CONFIG_GROUP)
         .help(&MY_HELP);
 
-    let mut client = Client::new(&config.token)
+    let mut client = Client::builder(&config.token)
         .framework(framework)
         .event_handler(Handler {
             run_loops: Mutex::new(true),

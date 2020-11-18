@@ -23,7 +23,7 @@ pub struct Manufacturer {
     pub successful_landings: i32,
     pub failed_landings: i32,
     pub attempted_landings: i32,
-    pub info_url: String,
+    pub info_url: Option<String>,
     pub wiki_url: String,
     pub logo_url: String,
     pub image_url: String,

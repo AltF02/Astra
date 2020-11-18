@@ -15,7 +15,7 @@ pub struct Event {
     pub location: String,
     pub news_url: String,
     pub video_url: String,
-    pub feature_image: String,
+    pub feature_image: Option<String>,
     pub date: DateTime<FixedOffset>,
     pub launches: Option<Vec<Launch>>,
     // pub expeditions: Option<Vec<Expedition>>,

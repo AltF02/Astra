@@ -1,3 +1,4 @@
+use crate::bot::utils::check_msg;
 use crate::bot::utils::{parse_channel, reply};
 use crate::services::ConnectionPool;
 use serenity::framework::standard::Args;
@@ -19,7 +20,39 @@ pub struct Config;
 
 #[command]
 async fn config_info(ctx: &Context, msg: &Message) -> CommandResult {
-    reply(&ctx, &msg, &String::from("Pong!")).await;
+    let pool = {
+        let data = ctx.data.read().await;
+        data.get::<ConnectionPool>().unwrap().clone()
+    };
+    let guild_id = msg.guild_id.unwrap().0 as i64;
+    let guild = msg.guild(&ctx).await.unwrap();
+    let guild_db = sqlx::query!("SELECT * FROM astra.guilds WHERE guild_id = $1", guild_id)
+        .fetch_optional(&pool)
+        .await?;
+    match guild_db {
+        Some(guild_db) => check_msg(
+            msg.channel_id
+                .send_message(&ctx.http, |m| {
+                    m.embed(|e| {
+                        e.title("Guild settings")
+                            .description(format!(""))
+                            .footer(|f| {
+                                f.text(&guild.name)
+                                    .icon_url(&guild.icon_url().unwrap_or(" ".to_string()))
+                            })
+                    })
+                })
+                .await,
+        ),
+        None => {
+            reply(
+                &ctx,
+                &msg,
+                "Guild not configured please run `>config channel #channel`",
+            )
+            .await;
+        }
+    };
     Ok(())
 }
 

@@ -9,6 +9,7 @@ impl TypeMapKey for ConnectionPool {
     type Value = PgPool;
 }
 
+#[derive(Debug)]
 pub struct DBLaunch {
     pub launch_id: String,
     pub name: String,
@@ -18,6 +19,7 @@ pub struct DBLaunch {
     pub image_url: Option<String>,
     pub dispatched: bool,
     pub status: i32,
+    pub description: Option<String>,
 }
 
 /*
@@ -39,12 +41,22 @@ pub(crate) async fn connect(
     Ok(pool)
 }
 
-pub(crate) async fn get_launch_database(pool: &PgPool) -> Vec<DBLaunch> {
-    sqlx::query_as!(
+pub(crate) async fn get_launch_database(pool: &PgPool, limit: bool) -> Vec<DBLaunch> {
+    if limit {
+        sqlx::query_as!(
         DBLaunch,
         "SELECT * FROM astra.launches WHERE net <= (now() + interval '24 hours') AND status = 1;"
-    )
-    .fetch_all(pool)
-    .await
-    .unwrap()
+        )
+        .fetch_all(pool)
+        .await
+        .unwrap()
+    } else {
+        sqlx::query_as!(
+        DBLaunch,
+        "SELECT * FROM astra.launches WHERE net > now() ORDER BY net"
+        )
+        .fetch_all(pool)
+        .await
+        .unwrap()
+    }
 }

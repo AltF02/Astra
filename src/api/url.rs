@@ -5,6 +5,6 @@ pub struct VidURL {
     pub priority: i8,
     pub title: String,
     pub description: String,
-    pub feature_image: String,
+    pub feature_image: Option<String>,
     pub url: String,
 }
