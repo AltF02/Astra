@@ -102,13 +102,13 @@ async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
             }
             None => {
                 let dt = next_launch.net;
-
                 if 24 >= (dt - now).num_hours() && launch_stamp > &now {
                     dispatch_to_guilds(&ctx, &next_launch, &pool, dt).await?;
                     dispatched = true;
                 }
             }
         }
+
         let vid_url: Option<&String> = match next_launch.vid_urls.get(0) {
             Some(vid_url) => Some(&vid_url.url),
             None => None,
@@ -118,14 +118,17 @@ async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
             None => None
         };
         sqlx::query!(
-                "INSERT INTO astra.launches (launch_id, name, net, tbd, vid_url, image_url, dispatched, status, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT (launch_id) DO UPDATE SET net = $3, tbd = $4, vid_url = $5, dispatched = $7, status = $8, description = $9;",
+                "INSERT INTO astra.launches (launch_id, name, net, tbd, vid_url, \
+                image_url, dispatched, status, description) \
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) \
+                    ON CONFLICT (launch_id) DO \
+                        UPDATE SET net = $3, tbd = $4, vid_url = $5, dispatched = $7, \
+                        status = $8, description = $9;",
                 next_launch.id, next_launch.name, next_launch.net, next_launch.tbdtime, vid_url, next_launch.rocket.configuration.image_url, dispatched, next_launch.status.id as i32, desc)
             .execute(&pool)
             .await?;
     }
 
-    // let channel = ctx.cache.channel(761357003762827274).await.unwrap();
-    // check_msg(channel.id().say(&ctx, &next_launch.name).await);
     Ok(())
 }
 
