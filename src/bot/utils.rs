@@ -97,6 +97,7 @@ pub(crate) async fn parse_channel(ctx: &Context, channel_name: String) -> Option
     }
 }
 
+#[allow(dead_code)]
 pub fn truncate(s: &str, max_chars: usize) -> &str {
     match s.char_indices().nth(max_chars) {
         None => s,
@@ -104,7 +105,7 @@ pub fn truncate(s: &str, max_chars: usize) -> &str {
     }
 }
 
-
+#[allow(dead_code)]
 pub fn truncate_string(s: &mut String, max_chars: usize) {
     let bytes = truncate(&s, max_chars).len();
     s.truncate(bytes);

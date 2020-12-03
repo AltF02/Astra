@@ -1,6 +1,6 @@
 use crate::api::launch::{get_next_launch, Launch};
 use crate::api::url::VidURL;
-use crate::bot::utils::{check_msg, convert_time_into_str, get_channel_forced, get_user_forced};
+use crate::bot::utils::{convert_time_into_str, get_channel_forced, get_user_forced};
 use crate::services::database::get_launch_database;
 use crate::services::ConnectionPool;
 use log::{debug, error};
@@ -26,8 +26,7 @@ async fn dispatch_to_guilds(ctx: &Context, next_launch: &Launch, pool: &Pool<Pos
                 continue;
             }
         };
-        check_msg(
-            channel.id().send_message(&ctx.http, |m| { m
+        if let Err(_) = channel.id().send_message(&ctx.http, |m| { m
                 .embed(|e| { e
                     .title(&next_launch.name)
                     .description(format!("> {}", if let Some(mission) = &next_launch.mission {&mission.description} else {"No description found :("}))
@@ -58,8 +57,9 @@ async fn dispatch_to_guilds(ctx: &Context, next_launch: &Launch, pool: &Pool<Pos
                     .timestamp(&dt)
                 })
                 .reactions(vec![Unicode("🔔".to_string())])
-            }).await,
-        )
+            }).await {
+            continue
+        }
     }
 
     Ok(())
@@ -172,8 +172,7 @@ async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
                 Some(user) => user,
                 None => continue,
             };
-            check_msg(
-                user.dm(&ctx.http, |m| {
+            if let Err(_) = user.dm(&ctx.http, |m| {
                     m.embed(|e| {
                         e.author(|a| {
                             a.name(&next_launch.name)
@@ -192,8 +191,9 @@ async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
                         })
                     })
                 })
-                .await,
-            )
+                .await {
+                continue
+            }
         }
     }
 

@@ -94,7 +94,10 @@ impl EventHandler for Handler {
             .await
         {
             Some(message) => message,
-            None => reaction.message(&ctx.http).await.unwrap(),
+            None => match reaction.message(&ctx.http).await {
+                Ok(message) => message,
+                Err(_) => return,
+            },
         };
 
         if message.author.id != ctx.cache.current_user_id().await {

@@ -10,12 +10,11 @@ use serenity::{
 
 use crate::services::database::get_launch_database;
 use crate::services::ConnectionPool;
-use crate::bot::utils::{check_msg, truncate, truncate_string};
+use crate::bot::utils::{check_msg};
 use serenity::model::prelude::ReactionType::Unicode;
 
 #[group()]
-#[prefixes("get", "search")]
-#[commands(rocket, upcoming)]
+#[commands(upcoming)]
 pub struct Get;
 
 #[command]
@@ -106,14 +105,14 @@ async fn upcoming(ctx: &Context, msg: &Message) -> CommandResult {
     };
 
     let mut description = next_launch.description.as_ref().unwrap_or(&"No description found...".to_string()).clone();
-    truncate_string(&mut description, 2000);
+    if description.len() > 2000 { description = "Description too long :(".to_string() }
 
     check_msg(msg.channel_id.send_message(&ctx.http, |m| { m
         .embed(|e| {e
             .color(0x00adf8)
             .image(&next_launch.image_url.as_ref().unwrap_or(&" ".to_string()))
             .title(&next_launch.name)
-            .description(&description)
+            .description(format!("> {}", &description))
             .footer(|f| { f
                 .text(&next_launch.launch_id)
             })

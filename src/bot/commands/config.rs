@@ -30,7 +30,7 @@ async fn config_info(ctx: &Context, msg: &Message) -> CommandResult {
         .fetch_optional(&pool)
         .await?;
     match guild_db {
-        Some(guild_db) => check_msg(
+        Some(_guild_db) => check_msg(
             msg.channel_id
                 .send_message(&ctx.http, |m| {
                     m.embed(|e| {
