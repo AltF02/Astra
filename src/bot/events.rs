@@ -44,7 +44,9 @@ impl EventHandler for Handler {
                     check_msg(channel.send_message(&ctx.http, |m| { m
                             .embed(|e| {e
                             .title("Thanks for adding me!")
-                            .description("To configure me run `>set channel #channel`. I will send launch reminders in that channel")
+                            .description("To start you need to setup a launches channel. \
+                            This can be done with `>set channel #launches`. \
+                            I will send launch reminders in that channel")
                             .footer(|f| {f
                                 .text(&guild.name)
                                 .icon_url(&guild.icon_url().unwrap_or_else(|| " ".to_string()))
