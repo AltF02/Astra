@@ -38,7 +38,7 @@ async fn config_info(ctx: &Context, msg: &Message) -> CommandResult {
                             .description(format!(""))
                             .footer(|f| {
                                 f.text(&guild.name)
-                                    .icon_url(&guild.icon_url().unwrap_or(" ".to_string()))
+                                    .icon_url(&guild.icon_url().unwrap_or_else(|| " ".to_string()))
                             })
                     })
                 })

@@ -18,7 +18,7 @@ impl EventHandler for Handler {
     async fn cache_ready(&self, ctx: Context, _guilds: Vec<GuildId>) {
         info!("Cache is ready...");
 
-        if self.run_loops.lock().await.clone() {
+        if *self.run_loops.lock().await {
             *self.run_loops.lock().await = false;
 
             let ctx = Arc::new(ctx);
@@ -44,10 +44,10 @@ impl EventHandler for Handler {
                     check_msg(channel.send_message(&ctx.http, |m| { m
                             .embed(|e| {e
                             .title("Thanks for adding me!")
-                            .description(format!("To configure me run `>set channel #channel`. I will send launch reminders in that channel"))
+                            .description("To configure me run `>set channel #channel`. I will send launch reminders in that channel")
                             .footer(|f| {f
                                 .text(&guild.name)
-                                .icon_url(&guild.icon_url().unwrap_or(" ".to_string()))
+                                .icon_url(&guild.icon_url().unwrap_or_else(|| " ".to_string()))
                             })
                         })
                     }).await)
@@ -57,7 +57,7 @@ impl EventHandler for Handler {
             let log_channel = get_channel_forced(&ctx, config.log_channel_id)
                 .await
                 .unwrap();
-            let owner_name = match get_user_forced(&ctx, guild.owner_id.0.clone()).await {
+            let owner_name = match get_user_forced(&ctx, guild.owner_id.0).await {
                 Some(owner) => owner.name,
                 None => "Owner not found".to_string(),
             };
@@ -73,9 +73,9 @@ impl EventHandler for Handler {
                                 ))
                                 .footer(|f| {
                                     f.text(&guild.name)
-                                        .icon_url(&guild.icon_url().unwrap_or(" ".to_string()))
+                                        .icon_url(&guild.icon_url().unwrap_or_else(|| " ".to_string()))
                                 })
-                                .thumbnail(&guild.icon_url().unwrap_or(" ".to_string()))
+                                .thumbnail(&guild.icon_url().unwrap_or_else(|| " ".to_string()))
                         })
                     })
                     .await,

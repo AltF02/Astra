@@ -77,8 +77,8 @@ pub(crate) async fn parse_channel(ctx: &Context, channel_name: String) -> Option
             Ok(c) => c,
             Err(_e) => return None,
         };
-        Some(channel.to_owned())
-    } else if channel_name.starts_with("<#") && channel_name.ends_with(">") {
+        Some(channel)
+    } else if channel_name.starts_with("<#") && channel_name.ends_with('>') {
         let re = Regex::new("[<#>]").unwrap();
         let channel_id = re.replace_all(&channel_name, "").into_owned();
 

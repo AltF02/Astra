@@ -52,7 +52,7 @@ pub async fn start(config: Config) {
             c.prefix(&config.prefix);
             c.allow_dm(true);
             c.case_insensitivity(true);
-            return c;
+            c
         })
         .group(&commands::general::COMMANDS_GROUP)
         .group(&commands::nasa::NASA_GROUP)

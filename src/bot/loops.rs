@@ -26,14 +26,14 @@ async fn dispatch_to_guilds(ctx: &Context, next_launch: &Launch, pool: &Pool<Pos
                 continue;
             }
         };
-        if let Err(_) = channel.id().send_message(&ctx.http, |m| { m
+        if channel.id().send_message(&ctx.http, |m| { m
                 .embed(|e| { e
                     .title(&next_launch.name)
                     .description(format!("> {}", if let Some(mission) = &next_launch.mission {&mission.description} else {"No description found :("}))
                     .fields(vec![
                         ("Rocket", format!("➤ Name: **{}**\n➤ Probability of launch: **{}**",
                                            &next_launch.rocket.configuration.name,
-                                           if let None = next_launch.probability {"Unknown".to_string()}
+                                           if next_launch.probability.is_none() {"Unknown".to_string()}
                                            else {
                                                if next_launch.probability.unwrap() == -1 {"Unknown".to_string()}
                                                else {format!("{}%", &next_launch.probability.unwrap()) }
@@ -49,7 +49,7 @@ async fn dispatch_to_guilds(ctx: &Context, next_launch: &Launch, pool: &Pool<Pos
                     }).url)
                     .colour(0x00adf8)
                     .footer(|f| {f
-                        .text(format!("{}", &next_launch.id))
+                        .text(&next_launch.id.to_string())
                     })
                     .author(|a| {a
                         .name(format!("Time Remaining: {} hours", remaining_str))
@@ -57,7 +57,7 @@ async fn dispatch_to_guilds(ctx: &Context, next_launch: &Launch, pool: &Pool<Pos
                     .timestamp(&dt)
                 })
                 .reactions(vec![Unicode("🔔".to_string())])
-            }).await {
+            }).await.is_err() {
             continue
         }
     }
@@ -172,7 +172,7 @@ async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
                 Some(user) => user,
                 None => continue,
             };
-            if let Err(_) = user.dm(&ctx.http, |m| {
+            if user.dm(&ctx.http, |m| {
                     m.embed(|e| {
                         e.author(|a| {
                             a.name(&next_launch.name)
@@ -191,7 +191,8 @@ async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
                         })
                     })
                 })
-                .await {
+                .await
+                .is_err() {
                 continue
             }
         }

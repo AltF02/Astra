@@ -31,7 +31,7 @@ Status diagram:
 */
 
 pub(crate) async fn connect(
-    uri: &String,
+    uri: &str,
 ) -> Result<Pool<Postgres>, Box<dyn std::error::Error + Send + Sync>> {
     let pool = PgPoolOptions::new()
         .max_connections(20)
