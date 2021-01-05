@@ -1,9 +1,9 @@
-use serenity::prelude::Context;
-use std::sync::Arc;
-use std::error::Error;
-use crate::services::ConnectionPool;
-use crate::services::database::get_launch_database;
 use crate::bot::utils::get_user_forced;
+use crate::services::database::get_launch_database;
+use crate::services::ConnectionPool;
+use serenity::prelude::Context;
+use std::error::Error;
+use std::sync::Arc;
 
 pub async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
     let pool = {
@@ -31,8 +31,8 @@ pub async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
             "SELECT user_id FROM astra.reminders WHERE launch_id = $1",
             next_launch.launch_id
         )
-            .fetch_all(&pool)
-            .await?;
+        .fetch_all(&pool)
+        .await?;
 
         let mut stream = "I'm unaware of any stream :(".to_string();
         if let Some(vid_url) = &next_launch.vid_url {

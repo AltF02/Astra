@@ -52,8 +52,8 @@ pub(crate) async fn get_launch_database(pool: &PgPool, limit: bool) -> Vec<DBLau
         .unwrap()
     } else {
         sqlx::query_as!(
-        DBLaunch,
-        "SELECT * FROM astra.launches WHERE net > now() ORDER BY net"
+            DBLaunch,
+            "SELECT * FROM astra.launches WHERE net > now() ORDER BY net"
         )
         .fetch_all(pool)
         .await

@@ -1,24 +1,27 @@
-use std::sync::Arc;
-use serenity::prelude::Context;
-use log::error;
-use log::debug;
-use chrono::Duration;
+use crate::bot::loops::apod::check_apod;
 use crate::bot::loops::launches::check_future_launch;
 use crate::bot::loops::reminders::reminder_check;
+use chrono::Duration;
+use log::debug;
+use log::error;
+use serenity::prelude::Context;
+use std::sync::Arc;
 
+mod apod;
 mod launches;
 mod reminders;
-
+mod utils;
 
 pub async fn launches_loop(ctx: Arc<Context>) {
-    let ctx = Arc::clone(&ctx);
-    let ctx_clone = Arc::clone(&ctx);
+    let launch_ctx = Arc::clone(&ctx);
+    let reminder_ctx = Arc::clone(&ctx);
+    let apod_ctx = Arc::clone(&ctx);
 
     tokio::spawn(async move {
         loop {
             debug!("Launches loop started");
 
-            let ctx1 = Arc::clone(&ctx);
+            let ctx1 = Arc::clone(&launch_ctx);
             tokio::spawn(async move {
                 if let Err(e) = check_future_launch(Arc::clone(&ctx1)).await {
                     error!(
@@ -38,7 +41,7 @@ pub async fn launches_loop(ctx: Arc<Context>) {
         loop {
             debug!("Reminder loop started");
 
-            let ctx1 = Arc::clone(&ctx_clone);
+            let ctx1 = Arc::clone(&reminder_ctx);
             tokio::spawn(async move {
                 if let Err(e) = reminder_check(Arc::clone(&ctx1)).await {
                     error!("reminder_check :: {}", e);
@@ -48,6 +51,23 @@ pub async fn launches_loop(ctx: Arc<Context>) {
 
             debug!("Reminder loop stopped");
             tokio::time::delay_for(std::time::Duration::from_secs(60)).await;
+        }
+    });
+
+    tokio::spawn(async move {
+        loop {
+            debug!("Apod loop started");
+
+            let ctx1 = Arc::clone(&apod_ctx);
+            tokio::spawn(async move {
+                if let Err(e) = check_apod(Arc::clone(&ctx1)).await {
+                    error!("An error occurred while running check_apod() >>> {}", e);
+                }
+            });
+
+            debug!("Launches loop finished");
+
+            tokio::time::delay_for(Duration::days(1).to_std().unwrap()).await;
         }
     });
 }

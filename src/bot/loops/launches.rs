@@ -1,15 +1,20 @@
-use serenity::prelude::Context;
-use crate::api::launch::{Launch, get_next_launch};
-use sqlx::{Pool, Postgres};
-use chrono::{DateTime, Utc};
-use std::error::Error;
-use crate::bot::utils::{convert_time_into_str, get_channel_forced};
+use crate::api::launch::{get_next_launch, Launch};
 use crate::api::url::VidURL;
-use serenity::model::prelude::ReactionType::Unicode;
+use crate::bot::utils::{convert_time_into_str, get_channel_forced};
 use crate::services::ConnectionPool;
+use chrono::{DateTime, Utc};
+use serenity::model::prelude::ReactionType::Unicode;
+use serenity::prelude::Context;
+use sqlx::{Pool, Postgres};
+use std::error::Error;
 use std::sync::Arc;
 
-pub async fn dispatch_to_guilds(ctx: &Context, next_launch: &Launch, pool: &Pool<Postgres>, dt: DateTime<Utc>) -> Result<(), Box<dyn Error>> {
+pub async fn dispatch_to_guilds(
+    ctx: &Context,
+    next_launch: &Launch,
+    pool: &Pool<Postgres>,
+    dt: DateTime<Utc>,
+) -> Result<(), Box<dyn Error>> {
     let guilds = sqlx::query!("SELECT * FROM astra.guilds WHERE active = true")
         .fetch_all(pool)
         .await?;
@@ -58,10 +63,8 @@ pub async fn dispatch_to_guilds(ctx: &Context, next_launch: &Launch, pool: &Pool
             continue
         }
     }
-
     Ok(())
 }
-
 
 pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
     let pool = {
@@ -71,10 +74,6 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
 
     let next_launches = get_next_launch().await?;
     for next_launch in &next_launches.results {
-        if next_launch.tbdtime {
-            continue;
-        }
-
         let mut dispatched: bool = false;
         let launch_stamp = &next_launch.net;
         let now = chrono::offset::Utc::now();
@@ -83,8 +82,8 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
             "SELECT dispatched, net FROM astra.launches WHERE launch_id = $1 AND dispatched = true",
             next_launch.id
         )
-            .fetch_optional(&pool)
-            .await?;
+        .fetch_optional(&pool)
+        .await?;
 
         match launch_db {
             Some(launch) => {
@@ -99,7 +98,7 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
             }
             None => {
                 let dt = next_launch.net;
-                if 24 >= (dt - now).num_hours() && launch_stamp > &now {
+                if 24 >= (dt - now).num_hours() && launch_stamp > &now && !next_launch.tbdtime {
                     dispatch_to_guilds(&ctx, &next_launch, &pool, dt).await?;
                     dispatched = true;
                 }
@@ -112,18 +111,27 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
         };
         let desc = match &next_launch.mission {
             Some(mission) => Some(&mission.description),
-            None => None
+            None => None,
         };
         sqlx::query!(
-                "INSERT INTO astra.launches (launch_id, name, net, tbd, vid_url, \
+            "INSERT INTO astra.launches (launch_id, name, net, tbd, vid_url, \
                 image_url, dispatched, status, description) \
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) \
                     ON CONFLICT (launch_id) DO \
                         UPDATE SET net = $3, tbd = $4, vid_url = $5, dispatched = $7, \
                         status = $8, description = $9;",
-                next_launch.id, next_launch.name, next_launch.net, next_launch.tbdtime, vid_url, next_launch.rocket.configuration.image_url, dispatched, next_launch.status.id as i32, desc)
-            .execute(&pool)
-            .await?;
+            next_launch.id,
+            next_launch.name,
+            next_launch.net,
+            next_launch.tbdtime,
+            vid_url,
+            next_launch.rocket.configuration.image_url,
+            dispatched,
+            next_launch.status.id as i32,
+            desc
+        )
+        .execute(&pool)
+        .await?;
     }
 
     Ok(())

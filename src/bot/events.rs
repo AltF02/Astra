@@ -40,21 +40,26 @@ impl EventHandler for Handler {
             let config = data.get::<Config>().unwrap();
 
             match guild.system_channel_id {
-                Some(channel) => {
-                    check_msg(channel.send_message(&ctx.http, |m| { m
-                            .embed(|e| {e
-                            .title("Thanks for adding me!")
-                            .description("To start you need to setup a launches channel. \
+                Some(channel) => check_msg(
+                    channel
+                        .send_message(&ctx.http, |m| {
+                            m.embed(|e| {
+                                e.title("Thanks for adding me!")
+                                    .description(
+                                        "To start you need to setup a launches channel. \
                             This can be done with `>set channel #launches`. \
-                            I will send launch reminders in that channel")
-                            .footer(|f| {f
-                                .text(&guild.name)
-                                .icon_url(&guild.icon_url().unwrap_or_else(|| " ".to_string()))
+                            I will send launch reminders in that channel",
+                                    )
+                                    .footer(|f| {
+                                        f.text(&guild.name).icon_url(
+                                            &guild.icon_url().unwrap_or_else(|| " ".to_string()),
+                                        )
+                                    })
                             })
                         })
-                    }).await)
-                }
-                None => return
+                        .await,
+                ),
+                None => return,
             }
             let log_channel = get_channel_forced(&ctx, config.log_channel_id)
                 .await
@@ -74,8 +79,9 @@ impl EventHandler for Handler {
                                     &guild.member_count, owner_name
                                 ))
                                 .footer(|f| {
-                                    f.text(&guild.name)
-                                        .icon_url(&guild.icon_url().unwrap_or_else(|| " ".to_string()))
+                                    f.text(&guild.name).icon_url(
+                                        &guild.icon_url().unwrap_or_else(|| " ".to_string()),
+                                    )
                                 })
                                 .thumbnail(&guild.icon_url().unwrap_or_else(|| " ".to_string()))
                         })

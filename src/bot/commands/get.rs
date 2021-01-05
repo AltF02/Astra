@@ -8,9 +8,9 @@ use serenity::{
     prelude::*,
 };
 
+use crate::bot::utils::check_msg;
 use crate::services::database::get_launch_database;
 use crate::services::ConnectionPool;
-use crate::bot::utils::{check_msg};
 use serenity::model::prelude::ReactionType::Unicode;
 
 #[group()]
@@ -99,26 +99,35 @@ async fn upcoming(ctx: &Context, msg: &Message) -> CommandResult {
     let next_launch = match next_launches.get(0) {
         Some(launch) => launch,
         None => {
-            msg.reply(&ctx, "Unable to find any in the near future :(").await?;
+            msg.reply(&ctx, "Unable to find any in the near future :(")
+                .await?;
             return Ok(());
         }
     };
 
-    let mut description = next_launch.description.as_ref().unwrap_or(&"No description found...".to_string()).clone();
-    if description.len() > 2000 { description = "Description too long :(".to_string() }
+    let mut description = next_launch
+        .description
+        .as_ref()
+        .unwrap_or(&"No description found...".to_string())
+        .clone();
+    if description.len() > 2000 {
+        description = "Description too long :(".to_string()
+    }
 
-    check_msg(msg.channel_id.send_message(&ctx.http, |m| { m
-        .embed(|e| {e
-            .color(0x00adf8)
-            .image(&next_launch.image_url.as_ref().unwrap_or(&" ".to_string()))
-            .title(&next_launch.name)
-            .description(format!("> {}", &description))
-            .footer(|f| { f
-                .text(&next_launch.launch_id)
+    check_msg(
+        msg.channel_id
+            .send_message(&ctx.http, |m| {
+                m.embed(|e| {
+                    e.color(0x00adf8)
+                        .image(&next_launch.image_url.as_ref().unwrap_or(&" ".to_string()))
+                        .title(&next_launch.name)
+                        .description(format!("> {}", &description))
+                        .footer(|f| f.text(&next_launch.launch_id))
+                })
+                .reactions(vec![Unicode("🔔".to_string())])
             })
-        })
-        .reactions(vec![Unicode("🔔".to_string())])
-    }).await);
+            .await,
+    );
 
     Ok(())
 }

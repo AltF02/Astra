@@ -76,7 +76,6 @@ pub async fn start(config: Config) {
         data.insert::<database::ConnectionPool>(pool);
     }
 
-
     if let Err(e) = client.start_autosharded().await {
         warn!("Failed to login, is the token correct?\n{}", e);
     }
