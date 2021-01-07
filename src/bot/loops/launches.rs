@@ -15,7 +15,7 @@ pub async fn dispatch_to_guilds(
     pool: &Pool<Postgres>,
     dt: DateTime<Utc>,
 ) -> Result<(), Box<dyn Error>> {
-    let guilds = sqlx::query!("SELECT * FROM astra.guilds WHERE active = true")
+    let guilds = sqlx::query!("SELECT * FROM astra.guilds WHERE active = true AND launches = true")
         .fetch_all(pool)
         .await?;
 

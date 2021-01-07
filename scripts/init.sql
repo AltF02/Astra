@@ -38,16 +38,21 @@ create unique index table_name_reminder_id_uindex
 
 create table astra.guilds
 (
-    guild_id   bigint               not null
+    guild_id   bigint                not null
         constraint guilds_pk
             primary key,
-    channel_id bigint               not null,
-    active     boolean default true not null
+    channel_id bigint                not null,
+    active     boolean default true  not null,
+    launches   boolean default true  not null,
+    apod       boolean default true  not null,
+    events     boolean default false not null
 );
 
 alter table astra.guilds
-    owner to current_user;
+    owner to current_user ;
 
 create unique index guilds_guild_id_uindex
     on astra.guilds (guild_id);
+
+
 

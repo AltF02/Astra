@@ -18,6 +18,21 @@
           "ordinal": 2,
           "name": "active",
           "type_info": "Bool"
+        },
+        {
+          "ordinal": 3,
+          "name": "launches",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 4,
+          "name": "apod",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 5,
+          "name": "events",
+          "type_info": "Bool"
         }
       ],
       "parameters": {
@@ -26,6 +41,9 @@
         ]
       },
       "nullable": [
+        false,
+        false,
+        false,
         false,
         false,
         false
@@ -164,6 +182,102 @@
       ]
     }
   },
+  "0ac08c3ce35157da8163670a4c70593828bb0372cf89dea480c6cee0a100d0d8": {
+    "query": "SELECT * FROM astra.guilds WHERE active = true AND launches = true",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "guild_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "channel_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 2,
+          "name": "active",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 3,
+          "name": "launches",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 4,
+          "name": "apod",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 5,
+          "name": "events",
+          "type_info": "Bool"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  },
+  "0f349280e0d03292ea2714d5ff8e35bbeca75254b98285c64e0a12b954b276c3": {
+    "query": "SELECT * FROM astra.guilds WHERE active = true AND apod = true",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "guild_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "channel_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 2,
+          "name": "active",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 3,
+          "name": "launches",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 4,
+          "name": "apod",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 5,
+          "name": "events",
+          "type_info": "Bool"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  },
   "220fda0c66381ca71f9783cbc17703cb035029eb9598a5674408620fdcf02b7f": {
     "query": "UPDATE astra.launches SET net = $1, dispatched = false WHERE launch_id = $2",
     "describe": {
@@ -203,6 +317,18 @@
       ]
     }
   },
+  "3822086119b2ac5b3caacb3dd101d0866ecbcca142d04becd2df667334349afb": {
+    "query": "UPDATE astra.guilds SET apod = NOT apod WHERE guild_id = $1",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "3b83a1fb73fc92ff8a02d54f2ac1338c5dda9e73d405e2c8e9eb1b9e6aa0940d": {
     "query": "INSERT INTO astra.launches (launch_id, name, net, tbd, vid_url, image_url, dispatched, status, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT (launch_id) DO UPDATE SET net = $3, tbd = $4, vid_url = $5, dispatched = $7, status = $8, description = $9;",
     "describe": {
@@ -223,25 +349,6 @@
       "nullable": []
     }
   },
-  "48b13de4719c2669f1d95799c87cc530254edd93ddfe59e886a4ef1421697ac1": {
-    "query": "INSERT INTO astra.launches (launch_id, name, net, tbd, vid_url, image_url, dispatched, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT (launch_id) DO UPDATE SET net = $3, tbd = $4, vid_url = $5, dispatched = $7, status = $8;",
-    "describe": {
-      "columns": [],
-      "parameters": {
-        "Left": [
-          "Text",
-          "Text",
-          "Timestamptz",
-          "Bool",
-          "Text",
-          "Text",
-          "Bool",
-          "Int4"
-        ]
-      },
-      "nullable": []
-    }
-  },
   "5d4a8a0b97b166fedb7238fc725524d9c7b5dc3a3278495ecf962777c32d8418": {
     "query": "DELETE FROM astra.reminders WHERE user_id = $1 AND launch_id = $2",
     "describe": {
@@ -250,6 +357,18 @@
         "Left": [
           "Int8",
           "Text"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "5f53c0d94a71c5f073f847e4a1ff5acc2dac7452e81f498e104a075eb46ac7b1": {
+    "query": "UPDATE astra.guilds SET events = NOT events WHERE guild_id = $1",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8"
         ]
       },
       "nullable": []
@@ -308,36 +427,6 @@
       ]
     }
   },
-  "7e46b4f83d37d3fe05d94dbb50104803fd120768926326a76a72eb274141fe3b": {
-    "query": "SELECT * FROM astra.guilds WHERE active = true",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "guild_id",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 1,
-          "name": "channel_id",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 2,
-          "name": "active",
-          "type_info": "Bool"
-        }
-      ],
-      "parameters": {
-        "Left": []
-      },
-      "nullable": [
-        false,
-        false,
-        false
-      ]
-    }
-  },
   "a39be920fc7728db32a92b51be4ecfb97afd4a6d00d605930c5a5e6e2894ce6a": {
     "query": "INSERT INTO astra.guilds (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2, active = true",
     "describe": {
@@ -345,6 +434,18 @@
       "parameters": {
         "Left": [
           "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "c8c60ad0c5364359186e6a184ecad8df9cf645f461820f7de1d49eda421b8353": {
+    "query": "UPDATE astra.guilds SET launches = NOT launches WHERE guild_id = $1",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
           "Int8"
         ]
       },

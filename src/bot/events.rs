@@ -47,7 +47,7 @@ impl EventHandler for Handler {
                                 e.title("Thanks for adding me!")
                                     .description(
                                         "To start you need to setup a launches channel. \
-                            This can be done with `>set channel #launches`. \
+                            This can be done with `>config channel #launches`. \
                             I will send launch reminders in that channel",
                                     )
                                     .footer(|f| {

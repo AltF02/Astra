@@ -7,10 +7,10 @@ use log::error;
 use serenity::prelude::Context;
 use std::sync::Arc;
 
-mod apod;
-mod launches;
-mod reminders;
-mod utils;
+pub mod apod;
+pub mod launches;
+pub mod reminders;
+pub mod utils;
 
 pub async fn launches_loop(ctx: Arc<Context>) {
     let launch_ctx = Arc::clone(&ctx);

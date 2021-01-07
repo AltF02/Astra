@@ -1,10 +1,49 @@
-use log::{error, warn};
+use log::warn;
 use regex::Regex;
+use serde::{Deserialize, Serialize};
 use serenity::model::channel::{Channel, Message};
 use serenity::model::user::User;
 use serenity::prelude::*;
 use serenity::Result as SerenityResult;
+use std::error::Error;
+use std::fmt;
 use time::Duration;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Apod {
+    pub copyright: String,
+    pub date: String,
+    pub explanation: String,
+    pub hdurl: String,
+    pub media_type: String,
+    pub url: String,
+    pub title: String,
+}
+
+#[derive(Debug)]
+pub struct ApodError {
+    details: String,
+}
+
+impl ApodError {
+    fn new(msg: &str) -> ApodError {
+        ApodError {
+            details: msg.to_string(),
+        }
+    }
+}
+
+impl fmt::Display for ApodError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.details)
+    }
+}
+
+impl Error for ApodError {
+    fn description(&self) -> &str {
+        &self.details
+    }
+}
 
 pub(crate) async fn reply<T: std::fmt::Display>(ctx: &Context, msg: &Message, content: T) {
     if let Err(why) = msg.channel_id.say(&ctx, &content).await {
@@ -17,8 +56,7 @@ pub(crate) async fn reply<T: std::fmt::Display>(ctx: &Context, msg: &Message, co
 
 pub(crate) fn check_msg(result: SerenityResult<Message>) {
     if let Err(why) = result {
-        error!("Error sending message: {:?}", why);
-        eprintln!("{}", why)
+        warn!("Error sending message: {:?}", why);
     }
 }
 
@@ -97,17 +135,27 @@ pub(crate) async fn parse_channel(ctx: &Context, channel_name: String) -> Option
     }
 }
 
-#[allow(dead_code)]
-pub fn truncate(s: &str, max_chars: usize) -> &str {
-    match s.char_indices().nth(max_chars) {
-        None => s,
-        Some((idx, _)) => &s[..idx],
-    }
-}
+pub(crate) async fn get_apod(key: &String) -> Result<Apod, ApodError> {
+    let res = match reqwest::get(&*format!(
+        "https://api.nasa.gov/planetary/apod?api_key={}",
+        key
+    ))
+    .await
+    {
+        Ok(res) => res,
+        Err(e) => return Err(ApodError::new(format!("Reqwest error {}", e).as_str())),
+    };
 
-#[allow(dead_code)]
-pub fn truncate_string(s: &mut String, max_chars: usize) {
-    let bytes = truncate(&s, max_chars).len();
-    s.truncate(bytes);
-    s.push_str("...")
+    if !res.status().is_success() {
+        return Err(ApodError::new(
+            format!("Status code incorrect: {}", res.status().as_u16()).as_str(),
+        ));
+    }
+
+    return match res.json::<Apod>().await {
+        Ok(apod) => Ok(apod),
+        Err(e) => Err(ApodError::new(
+            format!("Reqwest json error: {}", e).as_str(),
+        )),
+    };
 }
