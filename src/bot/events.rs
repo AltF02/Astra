@@ -92,7 +92,9 @@ impl EventHandler for Handler {
     }
 
     async fn reaction_add(&self, ctx: Context, reaction: Reaction) {
-        if reaction.user_id.unwrap() == ctx.cache.current_user_id().await {
+        if reaction.user_id.unwrap() == ctx.cache.current_user_id().await
+            || reaction.emoji.to_string() != "🔔"
+        {
             return;
         }
 
