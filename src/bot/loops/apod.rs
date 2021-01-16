@@ -13,7 +13,6 @@ pub async fn send_apod(channel: ChannelId, ctx: &Context, apod: &Apod) {
                 m.embed(|e| {
                     e.title(&apod.title)
                         .image(&apod.hdurl)
-                        .author(|a| a.name(&apod.copyright))
                         .footer(|f| f.text(&apod.date))
                         .description(&apod.explanation)
                         .colour(0x5694c7)
