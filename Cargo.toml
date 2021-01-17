@@ -21,7 +21,7 @@ features = ["framework", "standard_framework", "rustls_backend", "cache", "colle
 
 [dependencies.tokio]
 version = "0.2"
-features = ["macros"]
+features = ["macros", "time"]
 
 [dependencies.sqlx]
 version = "0.4"
