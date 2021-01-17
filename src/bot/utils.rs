@@ -1,3 +1,4 @@
+use chrono::Duration;
 use log::warn;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
@@ -7,7 +8,6 @@ use serenity::prelude::*;
 use serenity::Result as SerenityResult;
 use std::error::Error;
 use std::fmt;
-use time::Duration;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Apod {

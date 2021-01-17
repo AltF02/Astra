@@ -8,6 +8,7 @@ use serenity::prelude::Context;
 use std::sync::Arc;
 
 pub mod apod;
+pub mod events;
 pub mod launches;
 pub mod reminders;
 pub mod utils;
