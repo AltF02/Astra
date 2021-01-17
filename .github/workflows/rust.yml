@@ -15,5 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Test
+      run: ls
     - name: Check
       run: cargo check --verbose
