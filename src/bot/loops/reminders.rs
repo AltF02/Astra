@@ -49,7 +49,7 @@ pub async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
                 .dm(&ctx.http, |m| {
                     m.embed(|e| {
                         e.author(|a| a.name(&next_launch.name))
-                            .thumbnail(&next_launch.image_url.as_ref().unwrap_or(&"https://launchlibrary1.nyc3.digitaloceanspaces.com/RocketImages/placeholder_1920.png".to_string())
+                            .thumbnail(&next_launch.image_url.as_ref().unwrap_or(&"https://launchlibrary1.nyc3.digitaloceanspaces.com/RocketImages/placeholder_1920.png".to_string()))
                             .title("Launch Reminder")
                             .description(format!("{}\n\n{}", msg, stream))
                             .colour(0xcc0099)
