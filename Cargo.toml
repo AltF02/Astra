@@ -26,7 +26,7 @@ features = ["macros", "time"]
 [dependencies.sqlx]
 version = "0.4"
 git = "https://github.com/launchbadge/sqlx.git"
-commit = "31abe22e348d6ac668c140de32612f0930c2abec"
+rev = "31abe22e348d6ac668c140de32612f0930c2abec"
 default-features = false
 features = ["runtime-tokio-rustls", "macros", "postgres", "uuid", "offline", "chrono"]
 
