@@ -34,7 +34,7 @@ pub async fn launches_loop(ctx: Arc<Context>) {
 
             debug!("Launches loop finished");
 
-            tokio::time::delay_for(Duration::minutes(15).to_std().unwrap()).await;
+            tokio::time::sleep(Duration::minutes(15).to_std().unwrap()).await;
         }
     });
 
@@ -51,7 +51,7 @@ pub async fn launches_loop(ctx: Arc<Context>) {
             });
 
             debug!("Reminder loop stopped");
-            tokio::time::delay_for(std::time::Duration::from_secs(60)).await;
+            tokio::time::sleep(std::time::Duration::from_secs(60)).await;
         }
     });
 
@@ -68,7 +68,7 @@ pub async fn launches_loop(ctx: Arc<Context>) {
 
             debug!("Launches loop finished");
 
-            tokio::time::delay_for(Duration::days(1).to_std().unwrap()).await;
+            tokio::time::sleep(Duration::days(1).to_std().unwrap()).await;
         }
     });
 }

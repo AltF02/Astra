@@ -1,6 +1,7 @@
 pub mod common;
 pub mod crew;
 pub mod event;
+pub mod expedition;
 pub mod launch;
 pub mod launcher;
 pub mod manufacturer;
