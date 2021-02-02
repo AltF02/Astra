@@ -20,7 +20,7 @@ version = "0.10"
 features = ["framework", "standard_framework", "rustls_backend", "cache", "collector"]
 
 [dependencies.tokio]
-version = "1.0"
+version = "1.1"
 features = ["macros", "time"]
 
 [dependencies.sqlx]
