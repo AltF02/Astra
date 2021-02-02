@@ -1,4 +1,5 @@
 use crate::api::common::{ApiResult, SpaceStationCommon};
+use crate::api::expedition::Expedition;
 use crate::api::launch::Launch;
 use crate::api::BASE_URL;
 use chrono::{DateTime, FixedOffset};
@@ -18,7 +19,7 @@ pub struct Event {
     pub feature_image: Option<String>,
     pub date: DateTime<FixedOffset>,
     pub launches: Option<Vec<Launch>>,
-    // pub expeditions: Option<Vec<Expedition>>,
+    pub expeditions: Option<Vec<Expedition>>,
     pub spacestations: Option<Vec<SpaceStationCommon>>,
 }
 
