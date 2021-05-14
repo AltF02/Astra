@@ -15,21 +15,8 @@ pub struct Handler {
 #[allow(unused_must_use)]
 #[async_trait]
 impl EventHandler for Handler {
-    async fn cache_ready(&self, ctx: Context, _guilds: Vec<GuildId>) {
+    async fn cache_ready(&self, _ctx: Context, _guilds: Vec<GuildId>) {
         info!("Cache is ready...");
-
-        if *self.run_loops.lock().await {
-            *self.run_loops.lock().await = false;
-
-            let ctx = Arc::new(ctx);
-
-            let ctx_clone = Arc::clone(&ctx);
-
-            let launches_loop = tokio::spawn(async move { launches_loop(ctx_clone).await });
-
-            let _ = launches_loop.await;
-            *self.run_loops.lock().await = false;
-        }
     }
 
     // This is because clion is stupid
@@ -202,7 +189,20 @@ Ready as {}
  * Invite URL: {}",
             user.tag(),
             ready.guilds.len(),
-            user.invite_url(ctx, perms).await.unwrap(),
+            user.invite_url(ctx.clone(), perms).await.unwrap(),
         );
+
+        if *self.run_loops.lock().await {
+            *self.run_loops.lock().await = false;
+
+            let ctx = Arc::new(ctx);
+
+            let ctx_clone = Arc::clone(&ctx);
+
+            let launches_loop = tokio::spawn(async move { launches_loop(ctx_clone).await });
+
+            let _ = launches_loop.await;
+            *self.run_loops.lock().await = false;
+        }
     }
 }
