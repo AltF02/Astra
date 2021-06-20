@@ -34,4 +34,6 @@ pub struct ApiResult<T: ResObject> {
 pub struct Status {
     pub id: i8,
     pub name: String,
+    pub abbrev: String,
+    pub description: String,
 }

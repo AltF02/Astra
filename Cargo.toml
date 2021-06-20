@@ -1,6 +1,6 @@
 [package]
 name = "astra"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["Matthew <staalkoper@gmail.com>"]
 edition = "2018"
 readme = "README.md"
@@ -20,7 +20,7 @@ version = "0.10"
 features = ["framework", "standard_framework", "rustls_backend", "cache", "collector"]
 
 [dependencies.tokio]
-version = "1.5"
+version = "1"
 features = ["macros", "time"]
 
 [dependencies.sqlx]

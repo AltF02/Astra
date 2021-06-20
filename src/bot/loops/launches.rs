@@ -33,15 +33,22 @@ pub async fn dispatch_to_guilds(
                 .title(&next_launch.name)
                 .description(format!("> {}", if let Some(mission) = &next_launch.mission {&mission.description} else {"No description found :("}))
                 .fields(vec![
-                    ("Rocket", format!("➤ Name: **{}**\n➤ Probability of launch: **{}**",
-                                       &next_launch.rocket.configuration.name,
-                                       if next_launch.probability.is_none() {"Unknown".to_string()}
-                                       else {
-                                           if next_launch.probability.unwrap() == -1 {"Unknown".to_string()}
-                                           else {format!("{}%", &next_launch.probability.unwrap()) }
-                                       }), false)
+                    ("Rocket", format!("➤ Name: **{}**\n➤ Total Launches: **{}**", 
+                        &next_launch.rocket.configuration.name,
+                        &next_launch.rocket.configuration.total_launch_count
+                    ), false),
+                    ("Launch", format!("➤ Status: **{}**\n➤ Probability: **{}**",
+                        &next_launch.status.description,
+                        if next_launch.probability.is_none() {"Unknown".to_string()}
+                        else {
+                            if next_launch.probability.unwrap() == -1 {"Unknown".to_string()}
+                            else {format!("{}%", &next_launch.probability.unwrap()) } 
+                        }
+                        ), false)
                 ])
-                .image(&next_launch.rocket.configuration.image_url.as_ref().unwrap_or(&"https://launchlibrary1.nyc3.digitaloceanspaces.com/RocketImages/placeholder_1920.png".to_string()))
+                .image(&next_launch.rocket.configuration.image_url
+                    .as_ref()
+                    .unwrap_or(&"https://launchlibrary1.nyc3.digitaloceanspaces.com/RocketImages/placeholder_1920.png".to_string()))
                 .url(&next_launch.vid_urls.get(0).unwrap_or(&VidURL {
                     priority: 0,
                     title: "".to_string(),
@@ -98,7 +105,8 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
             }
             None => {
                 let dt = next_launch.net;
-                if 24 >= (dt - now).num_hours() && launch_stamp > &now && !next_launch.tbdtime {
+                if 24 >= (dt - now).num_hours() && launch_stamp > &now && next_launch.status.id == 1
+                {
                     dispatch_to_guilds(&ctx, &next_launch, &pool, dt).await?;
                     dispatched = true;
                 }
@@ -114,16 +122,15 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
             None => None,
         };
         sqlx::query!(
-            "INSERT INTO astra.launches (launch_id, name, net, tbd, vid_url, \
+            "INSERT INTO astra.launches (launch_id, name, net, vid_url, \
                 image_url, dispatched, status, description) \
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) \
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8) \
                     ON CONFLICT (launch_id) DO \
-                        UPDATE SET net = $3, tbd = $4, vid_url = $5, dispatched = $7, \
-                        status = $8, description = $9;",
+                        UPDATE SET net = $3, vid_url = $4, dispatched = $6, \
+                        status = $7, description = $8;",
             next_launch.id,
             next_launch.name,
             next_launch.net,
-            next_launch.tbdtime,
             vid_url,
             next_launch.rocket.configuration.image_url,
             dispatched,

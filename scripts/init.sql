@@ -5,7 +5,6 @@ create table astra.launches
             primary key,
     name        text                     not null,
     net         timestamp with time zone not null,
-    tbd         boolean default true     not null,
     vid_url     text,
     image_url   text,
     dispatched  boolean default false    not null,

@@ -71,31 +71,26 @@
         },
         {
           "ordinal": 3,
-          "name": "tbd",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 4,
           "name": "vid_url",
           "type_info": "Text"
         },
         {
-          "ordinal": 5,
+          "ordinal": 4,
           "name": "image_url",
           "type_info": "Text"
         },
         {
-          "ordinal": 6,
+          "ordinal": 5,
           "name": "dispatched",
           "type_info": "Bool"
         },
         {
-          "ordinal": 7,
+          "ordinal": 6,
           "name": "status",
           "type_info": "Int4"
         },
         {
-          "ordinal": 8,
+          "ordinal": 7,
           "name": "description",
           "type_info": "Text"
         }
@@ -104,7 +99,6 @@
         "Left": []
       },
       "nullable": [
-        false,
         false,
         false,
         false,
@@ -137,31 +131,26 @@
         },
         {
           "ordinal": 3,
-          "name": "tbd",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 4,
           "name": "vid_url",
           "type_info": "Text"
         },
         {
-          "ordinal": 5,
+          "ordinal": 4,
           "name": "image_url",
           "type_info": "Text"
         },
         {
-          "ordinal": 6,
+          "ordinal": 5,
           "name": "dispatched",
           "type_info": "Bool"
         },
         {
-          "ordinal": 7,
+          "ordinal": 6,
           "name": "status",
           "type_info": "Int4"
         },
         {
-          "ordinal": 8,
+          "ordinal": 7,
           "name": "description",
           "type_info": "Text"
         }
@@ -170,7 +159,6 @@
         "Left": []
       },
       "nullable": [
-        false,
         false,
         false,
         false,
@@ -329,26 +317,6 @@
       "nullable": []
     }
   },
-  "3b83a1fb73fc92ff8a02d54f2ac1338c5dda9e73d405e2c8e9eb1b9e6aa0940d": {
-    "query": "INSERT INTO astra.launches (launch_id, name, net, tbd, vid_url, image_url, dispatched, status, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT (launch_id) DO UPDATE SET net = $3, tbd = $4, vid_url = $5, dispatched = $7, status = $8, description = $9;",
-    "describe": {
-      "columns": [],
-      "parameters": {
-        "Left": [
-          "Text",
-          "Text",
-          "Timestamptz",
-          "Bool",
-          "Text",
-          "Text",
-          "Bool",
-          "Int4",
-          "Text"
-        ]
-      },
-      "nullable": []
-    }
-  },
   "5d4a8a0b97b166fedb7238fc725524d9c7b5dc3a3278495ecf962777c32d8418": {
     "query": "DELETE FROM astra.reminders WHERE user_id = $1 AND launch_id = $2",
     "describe": {
@@ -369,6 +337,25 @@
       "parameters": {
         "Left": [
           "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "67cb714ce70bf08db0a1760b2f97bd4242948891aa5b944e0683e4b420459ce4": {
+    "query": "INSERT INTO astra.launches (launch_id, name, net, vid_url, image_url, dispatched, status, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT (launch_id) DO UPDATE SET net = $3, vid_url = $4, dispatched = $6, status = $7, description = $8;",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Timestamptz",
+          "Text",
+          "Text",
+          "Bool",
+          "Int4",
+          "Text"
         ]
       },
       "nullable": []
@@ -460,18 +447,6 @@
         "Left": [
           "Int8",
           "Text"
-        ]
-      },
-      "nullable": []
-    }
-  },
-  "e173e23936bd2e40a58fbe0d6bb0b5928ea05a4c130a21d036e1ffce50ca11f0": {
-    "query": "UPDATE astra.guilds SET active = false WHERE guild_id = $1",
-    "describe": {
-      "columns": [],
-      "parameters": {
-        "Left": [
-          "Int8"
         ]
       },
       "nullable": []

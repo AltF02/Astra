@@ -12,7 +12,6 @@ pub struct Rocket {
 #[derive(Deserialize, Serialize, Debug)]
 pub struct RocketConfiguration {
     pub id: i32,
-    pub launch_library_id: Option<i32>,
     pub url: String,
     pub name: String,
     pub description: String,

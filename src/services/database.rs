@@ -14,7 +14,6 @@ pub struct DBLaunch {
     pub launch_id: String,
     pub name: String,
     pub net: DateTime<Utc>,
-    pub tbd: bool,
     pub vid_url: Option<String>,
     pub image_url: Option<String>,
     pub dispatched: bool,

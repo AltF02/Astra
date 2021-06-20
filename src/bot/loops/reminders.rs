@@ -13,7 +13,7 @@ pub async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
 
     let next_launches = get_launch_database(&pool, true).await;
     for next_launch in &next_launches {
-        if next_launch.tbd {
+        if next_launch.status != 1 {
             continue;
         }
 
