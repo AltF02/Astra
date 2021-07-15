@@ -10,5 +10,3 @@ pub mod rocket;
 pub mod spacecraft;
 pub mod traits;
 pub mod url;
-
-pub const BASE_URL: &str = "https://ll.thespacedevs.com/2.2.0";

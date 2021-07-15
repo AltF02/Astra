@@ -1,4 +1,4 @@
-use crate::api::common::Status;
+use crate::models::common::Status;
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug)]

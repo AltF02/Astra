@@ -1,5 +1,5 @@
-use crate::api::event::Event;
-use crate::api::launch::Launch;
+use crate::models::event::Event;
+use crate::models::launch::Launch;
 
 pub trait Ctx: std::fmt::Display {}
 

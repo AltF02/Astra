@@ -1,11 +1,9 @@
+use crate::constants::{DEFAULT_LOCATION, ENV_VAR};
 use log::info;
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
-
-const ENV_VAR: &str = "CONFIG_PATH";
-const DEFAULT_LOCATION: &str = "./config.yml";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
@@ -14,6 +12,14 @@ pub struct Config {
     pub db_uri: String,
     pub nasa_key: String,
     pub log_channel_id: u64,
+    pub emotes: Emotes,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Emotes {
+    pub enabled: String,
+    pub disabled: String,
+    pub bell: String,
 }
 
 impl Config {
@@ -28,8 +34,13 @@ impl Config {
                         token: prompt("Discord Bot Token"),
                         prefix: prompt("Bot Prefix"),
                         db_uri: prompt("Database Uri"),
-                        nasa_key: prompt("Nasa api key"),
+                        nasa_key: prompt("Nasa models key"),
                         log_channel_id: 0,
+                        emotes: Emotes {
+                            enabled: prompt("Discord enabled emote"),
+                            disabled: prompt("Discord disabled emote"),
+                            bell: prompt("Discord Bell emote"),
+                        },
                     }
                 } else {
                     conf = Config {
@@ -38,11 +49,16 @@ impl Config {
                         db_uri: String::new(),
                         nasa_key: String::new(),
                         log_channel_id: 0,
+                        emotes: Emotes {
+                            enabled: String::new(),
+                            disabled: String::new(),
+                            bell: String::from("🔔"),
+                        },
                     };
                 }
                 conf.save();
                 info!("Created a new config.yml to {}", &location);
-                return conf;
+                conf
             }
         }
     }

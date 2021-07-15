@@ -1,5 +1,5 @@
 use crate::bot::loops::launches_loop;
-use crate::bot::utils::{check_msg, get_channel_forced, get_user_forced};
+use crate::bot::utils::Utils;
 use crate::services::config::Config;
 use crate::services::ConnectionPool;
 use log::info;
@@ -22,60 +22,64 @@ impl EventHandler for Handler {
     // This is because clion is stupid
     //noinspection ALL
     async fn guild_create(&self, ctx: Context, guild: Guild, is_new: bool) {
-        if is_new {
-            let data = ctx.data.read().await;
-            let config = data.get::<Config>().unwrap();
+        if !is_new {
+            return;
+        }
 
-            match guild.system_channel_id {
-                Some(channel) => check_msg(
-                    channel
-                        .send_message(&ctx.http, |m| {
-                            m.embed(|e| {
-                                e.title("Thanks for adding me!")
-                                    .description(
-                                        "To start you need to setup a launches channel. \
-                            This can be done with `>config channel #launches`. \
-                            I will send launch reminders in that channel",
-                                    )
-                                    .footer(|f| {
-                                        f.text(&guild.name).icon_url(
-                                            &guild.icon_url().unwrap_or_else(|| " ".to_string()),
-                                        )
-                                    })
-                            })
-                        })
-                        .await,
-                ),
-                None => return,
-            }
-            let log_channel = get_channel_forced(&ctx, config.log_channel_id)
-                .await
-                .unwrap();
-            let owner_name = match get_user_forced(&ctx, guild.owner_id.0).await {
-                Some(owner) => owner.name,
-                None => "Owner not found".to_string(),
-            };
-            check_msg(
-                log_channel
-                    .id()
+        let data = ctx.data.read().await;
+        let config = data.get::<Config>().unwrap();
+
+        match guild.system_channel_id {
+            Some(channel) => Utils::check_msg(
+                channel
                     .send_message(&ctx.http, |m| {
                         m.embed(|e| {
-                            e.title("Joined Guild")
-                                .description(format!(
-                                    "➤ Member count: **{}**\n ➤ Owner: **{}**",
-                                    &guild.member_count, owner_name
-                                ))
+                            e.title("Thanks for adding me!")
+                                .description(
+                                    "To start you need to setup a launches channel. \
+                            This can be done with `>config channel #launches`. \
+                            I will send launch reminders in that channel",
+                                )
                                 .footer(|f| {
                                     f.text(&guild.name).icon_url(
                                         &guild.icon_url().unwrap_or_else(|| " ".to_string()),
                                     )
                                 })
-                                .thumbnail(&guild.icon_url().unwrap_or_else(|| " ".to_string()))
                         })
                     })
                     .await,
-            )
+            ),
+            None => return,
         }
+
+        let log_channel = Utils::fetch_channel_forced(&ctx, config.log_channel_id)
+            .await
+            .unwrap();
+
+        let owner_name = match Utils::fetch_user_forced(&ctx, guild.owner_id.0).await {
+            Some(owner) => owner.name,
+            None => "Owner not found".to_string(),
+        };
+
+        Utils::check_msg(
+            log_channel
+                .id()
+                .send_message(&ctx.http, |m| {
+                    m.embed(|e| {
+                        e.title("Joined Guild")
+                            .description(format!(
+                                "➤ Member count: **{}**\n ➤ Owner: **{}**",
+                                &guild.member_count, owner_name
+                            ))
+                            .footer(|f| {
+                                f.text(&guild.name)
+                                    .icon_url(&guild.icon_url().unwrap_or_else(|| " ".to_string()))
+                            })
+                            .thumbnail(&guild.icon_url().unwrap_or_else(|| " ".to_string()))
+                    })
+                })
+                .await,
+        )
     }
 
     async fn reaction_add(&self, ctx: Context, reaction: Reaction) {
@@ -132,7 +136,7 @@ impl EventHandler for Handler {
         let db_user = db_user.unwrap();
         match db_user {
             Some(_) => {
-                check_msg(
+                Utils::check_msg(
                     user.dm(&ctx.http, |m| {
                         m.embed(|e| {
                             e.title("Reminder Removal")
@@ -155,7 +159,7 @@ impl EventHandler for Handler {
                 .await;
             }
             None => {
-                check_msg(user.dm(&ctx.http, |m| { m
+                Utils::check_msg(user.dm(&ctx.http, |m| { m
                     .embed(|e| { e
                         .title("Reminder Confirmation")
                         .description(format!("I will remind about launch **{}**. If you want to stop me from reminding you, hit the bell emoji again", &name))
@@ -184,9 +188,9 @@ impl EventHandler for Handler {
         .await;
         println!(
             "
-Ready as {}
- * Serving {} guilds
- * Invite URL: {}",
+            Ready as {}
+             * Serving {} guilds
+             * Invite URL: {}",
             user.tag(),
             ready.guilds.len(),
             user.invite_url(ctx.clone(), perms).await.unwrap(),

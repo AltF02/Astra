@@ -1,8 +1,8 @@
-use crate::api::common::{ApiResult, Status};
-use crate::api::mission::Mission;
-use crate::api::rocket::Rocket;
-use crate::api::url::VidURL;
-use crate::api::BASE_URL;
+use crate::constants::BASE_URL;
+use crate::models::common::{ApiResult, Status};
+use crate::models::mission::Mission;
+use crate::models::rocket::Rocket;
+use crate::models::url::VidURL;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::error::Error;

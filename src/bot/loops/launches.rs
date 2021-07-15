@@ -1,6 +1,6 @@
-use crate::api::launch::{get_next_launch, Launch};
-use crate::api::url::VidURL;
-use crate::bot::utils::{convert_time_into_str, get_channel_forced};
+use crate::bot::utils::Utils;
+use crate::models::launch::{get_next_launch, Launch};
+use crate::models::url::VidURL;
 use crate::services::ConnectionPool;
 use chrono::{DateTime, Utc};
 use serenity::model::prelude::ReactionType::Unicode;
@@ -19,15 +19,16 @@ pub async fn dispatch_to_guilds(
         .fetch_all(pool)
         .await?;
 
-    let remaining_str = convert_time_into_str(dt - chrono::offset::Utc::now());
+    let remaining_str = Utils::convert_time_into_str(dt - chrono::offset::Utc::now());
     for guild in guilds {
         let channel_id = guild.channel_id as u64;
-        let channel = match get_channel_forced(&ctx, channel_id).await {
+        let channel = match Utils::fetch_channel_forced(&ctx, channel_id).await {
             Some(channel) => channel,
             None => {
                 continue;
             }
         };
+
         if channel.id().send_message(&ctx.http, |m| { m
             .embed(|e| { e
                 .title(&next_launch.name)
@@ -39,11 +40,8 @@ pub async fn dispatch_to_guilds(
                     ), false),
                     ("Launch", format!("➤ Status: **{}**\n➤ Probability: **{}**",
                         &next_launch.status.description,
-                        if next_launch.probability.is_none() {"Unknown".to_string()}
-                        else {
-                            if next_launch.probability.unwrap() == -1 {"Unknown".to_string()}
-                            else {format!("{}%", &next_launch.probability.unwrap()) } 
-                        }
+                        if next_launch.probability.is_none() || next_launch.probability.unwrap() == -1 {"Unknown".to_string()}
+                        else {format!("{}%", &next_launch.probability.unwrap()) }
                         ), false)
                 ])
                 .image(&next_launch.rocket.configuration.image_url
@@ -117,10 +115,11 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
             Some(vid_url) => Some(&vid_url.url),
             None => None,
         };
-        let desc = match &next_launch.mission {
-            Some(mission) => Some(&mission.description),
-            None => None,
-        };
+        let desc = next_launch
+            .mission
+            .as_ref()
+            .map(|mission| &mission.description);
+
         sqlx::query!(
             "INSERT INTO astra.launches (launch_id, name, net, vid_url, \
                 image_url, dispatched, status, description) \

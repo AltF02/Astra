@@ -8,7 +8,7 @@ use serenity::{
     prelude::*,
 };
 
-use crate::bot::utils::check_msg;
+use crate::bot::utils::Utils;
 use crate::services::database::get_launch_database;
 use crate::services::ConnectionPool;
 use serenity::model::prelude::ReactionType::Unicode;
@@ -76,7 +76,7 @@ async fn rocket(ctx: &Context, msg: &Message, _args: Args) -> CommandResult {
     // );
     msg.reply(
         &ctx,
-        "Sorry not implemented yet due to switching to api 2.0",
+        "Sorry not implemented yet due to switching to models 2.0",
     )
     .await?;
     Ok(())
@@ -114,7 +114,7 @@ async fn upcoming(ctx: &Context, msg: &Message) -> CommandResult {
         description = "Description too long :(".to_string()
     }
 
-    check_msg(
+    Utils::check_msg(
         msg.channel_id
             .send_message(&ctx.http, |m| {
                 m.embed(|e| {
