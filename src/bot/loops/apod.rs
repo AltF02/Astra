@@ -1,4 +1,4 @@
-use crate::bot::utils::{check_msg, get_apod, get_channel_forced, Apod};
+use crate::bot::utils::{Apod, Utils};
 use crate::services::database::DBGuild;
 use crate::services::{Config, ConnectionPool};
 use serenity::model::id::ChannelId;
@@ -7,7 +7,7 @@ use std::error::Error;
 use std::sync::Arc;
 
 pub async fn send_apod(channel: ChannelId, ctx: &Context, apod: &Apod) {
-    check_msg(
+    Utils::check_msg(
         channel
             .send_message(&ctx.http, |m| {
                 m.embed(|e| {
@@ -28,7 +28,7 @@ pub async fn check_apod(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
     let pool = ctx_data.get::<ConnectionPool>().unwrap().clone();
     let config = ctx_data.get::<Config>().unwrap().clone();
 
-    let apod = get_apod(&config.nasa_key).await?;
+    let apod = Utils::fetch_apod(&config.nasa_key).await?;
 
     let guilds: Vec<DBGuild> = sqlx::query_as!(
         DBGuild,
@@ -38,7 +38,7 @@ pub async fn check_apod(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
     .await?;
 
     for guild in guilds {
-        if let Some(channel) = get_channel_forced(&ctx, guild.channel_id as u64).await {
+        if let Some(channel) = Utils::fetch_channel_forced(&ctx, guild.channel_id as u64).await {
             send_apod(channel.id(), &ctx, &apod).await;
         }
     }

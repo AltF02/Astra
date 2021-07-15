@@ -1,4 +1,4 @@
-use crate::api::traits::ResObject;
+use crate::models::traits::ResObject;
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 

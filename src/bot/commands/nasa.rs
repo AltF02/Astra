@@ -1,5 +1,7 @@
+mod daily;
+
 use crate::bot::loops::apod::send_apod;
-use crate::bot::utils::get_apod;
+use crate::bot::utils::Utils;
 use crate::services::Config;
 use serenity::{
     framework::standard::{
@@ -19,7 +21,7 @@ async fn daily(ctx: &Context, msg: &Message) -> CommandResult {
     let data = ctx.data.read().await;
     let config = data.get::<Config>().unwrap();
 
-    match get_apod(&config.nasa_key).await {
+    match Utils::fetch_apod(&config.nasa_key).await {
         Ok(body) => {
             send_apod(msg.channel_id, ctx, &body).await;
         }

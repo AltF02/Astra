@@ -1,5 +1,5 @@
-use crate::api::crew::Crew;
-use crate::api::spacecraft::SpaceCraft;
+use crate::models::crew::Crew;
+use crate::models::spacecraft::SpaceCraft;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 

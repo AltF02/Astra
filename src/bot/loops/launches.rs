@@ -1,6 +1,6 @@
-use crate::api::launch::{get_next_launch, Launch};
-use crate::api::url::VidURL;
-use crate::bot::utils::{convert_time_into_str, get_channel_forced};
+use crate::bot::utils::Utils;
+use crate::models::launch::{get_next_launch, Launch};
+use crate::models::url::VidURL;
 use crate::services::ConnectionPool;
 use chrono::{DateTime, Utc};
 use serenity::model::prelude::ReactionType::Unicode;
@@ -19,10 +19,10 @@ pub async fn dispatch_to_guilds(
         .fetch_all(pool)
         .await?;
 
-    let remaining_str = convert_time_into_str(dt - chrono::offset::Utc::now());
+    let remaining_str = Utils::convert_time_into_str(dt - chrono::offset::Utc::now());
     for guild in guilds {
         let channel_id = guild.channel_id as u64;
-        let channel = match get_channel_forced(&ctx, channel_id).await {
+        let channel = match Utils::fetch_channel_forced(&ctx, channel_id).await {
             Some(channel) => channel,
             None => {
                 continue;

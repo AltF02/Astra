@@ -1,7 +1,7 @@
-use crate::api::common::{ApiResult, SpaceStationCommon};
-use crate::api::expedition::Expedition;
-use crate::api::launch::Launch;
-use crate::api::BASE_URL;
+use crate::constants::BASE_URL;
+use crate::models::common::{ApiResult, SpaceStationCommon};
+use crate::models::expedition::Expedition;
+use crate::models::launch::Launch;
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 use std::error::Error;

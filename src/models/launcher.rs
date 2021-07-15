@@ -1,4 +1,4 @@
-use crate::api::manufacturer::Manufacturer;
+use crate::models::manufacturer::Manufacturer;
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug)]

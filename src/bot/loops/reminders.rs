@@ -1,4 +1,4 @@
-use crate::bot::utils::get_user_forced;
+use crate::bot::utils::Utils;
 use crate::services::database::get_launch_database;
 use crate::services::ConnectionPool;
 use serenity::prelude::Context;
@@ -41,7 +41,7 @@ pub async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
 
         for user in users {
             let user_id = user.user_id as u64;
-            let user = match get_user_forced(&ctx, user_id).await {
+            let user = match Utils::fetch_user_forced(&ctx, user_id).await {
                 Some(user) => user,
                 None => continue,
             };
