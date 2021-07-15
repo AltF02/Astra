@@ -121,13 +121,13 @@ impl Utils {
                 Err(_e) => return None,
             };
 
-            Some(channel.to_owned())
+            Some(channel)
         } else {
             None
         }
     }
 
-    pub async fn fetch_apod(key: &String) -> Result<Apod, ApodError> {
+    pub async fn fetch_apod(key: &str) -> Result<Apod, ApodError> {
         let res = match reqwest::get(&*format!(
             "https://models.nasa.gov/planetary/apod?api_key={}",
             key

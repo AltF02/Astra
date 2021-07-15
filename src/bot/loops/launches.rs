@@ -28,6 +28,7 @@ pub async fn dispatch_to_guilds(
                 continue;
             }
         };
+
         if channel.id().send_message(&ctx.http, |m| { m
             .embed(|e| { e
                 .title(&next_launch.name)
@@ -39,11 +40,8 @@ pub async fn dispatch_to_guilds(
                     ), false),
                     ("Launch", format!("➤ Status: **{}**\n➤ Probability: **{}**",
                         &next_launch.status.description,
-                        if next_launch.probability.is_none() {"Unknown".to_string()}
-                        else {
-                            if next_launch.probability.unwrap() == -1 {"Unknown".to_string()}
-                            else {format!("{}%", &next_launch.probability.unwrap()) } 
-                        }
+                        if next_launch.probability.is_none() || next_launch.probability.unwrap() == -1 {"Unknown".to_string()}
+                        else {format!("{}%", &next_launch.probability.unwrap()) }
                         ), false)
                 ])
                 .image(&next_launch.rocket.configuration.image_url
@@ -117,10 +115,11 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
             Some(vid_url) => Some(&vid_url.url),
             None => None,
         };
-        let desc = match &next_launch.mission {
-            Some(mission) => Some(&mission.description),
-            None => None,
-        };
+        let desc = next_launch
+            .mission
+            .as_ref()
+            .map(|mission| &mission.description);
+
         sqlx::query!(
             "INSERT INTO astra.launches (launch_id, name, net, vid_url, \
                 image_url, dispatched, status, description) \

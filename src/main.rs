@@ -1,4 +1,4 @@
-#![allow(clippy::suspicious_else_formatting)]
+#![allow(clippy::blocks_in_if_conditions)]
 
 mod bot;
 mod constants;

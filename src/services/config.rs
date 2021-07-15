@@ -58,7 +58,7 @@ impl Config {
                 }
                 conf.save();
                 info!("Created a new config.yml to {}", &location);
-                return conf;
+                conf
             }
         }
     }
