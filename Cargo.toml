@@ -1,9 +1,10 @@
 [package]
 name = "astra"
 version = "0.5.0"
-authors = ["Matthew <staalkoper@gmail.com>"]
+authors = ["Matthew <dev@mtbk.me>"]
 edition = "2018"
 readme = "README.md"
+license = "GPL-3.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

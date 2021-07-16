@@ -19,8 +19,6 @@ impl EventHandler for Handler {
         info!("Cache is ready...");
     }
 
-    // This is because clion is stupid
-    //noinspection ALL
     async fn guild_create(&self, ctx: Context, guild: Guild, is_new: bool) {
         if !is_new {
             return;
@@ -37,8 +35,8 @@ impl EventHandler for Handler {
                             e.title("Thanks for adding me!")
                                 .description(
                                     "To start you need to setup a launches channel. \
-                            This can be done with `>config channel #launches`. \
-                            I will send launch reminders in that channel",
+                                    This can be done with `>config channel #launches`. \
+                                    I will send launch reminders in that channel",
                                 )
                                 .footer(|f| {
                                     f.text(&guild.name).icon_url(

@@ -14,12 +14,18 @@ impl TypeMapKey for ConnectionPool {
 
 #[async_trait]
 pub trait Interface {
-    async fn get(pool: &PgPool) -> Vec<Self>
+    async fn get(_pool: &PgPool) -> Vec<Self>
     where
-        Self: Sized;
-    async fn get_limited(pool: &PgPool) -> Vec<Self>
+        Self: Sized,
+    {
+        unimplemented!()
+    }
+    async fn get_limited(_pool: &PgPool) -> Vec<Self>
     where
-        Self: Sized;
+        Self: Sized,
+    {
+        unimplemented!()
+    }
 }
 
 pub async fn connect(
