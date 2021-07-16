@@ -4,7 +4,7 @@ mod set;
 
 use crate::bot::utils::Utils;
 use crate::services::config::Config as BotConfig;
-use crate::services::database::DBGuild;
+use crate::services::database::guild::DBGuild;
 
 use self::channel::CHANNEL_COMMAND;
 use self::info::CONFIG_INFO_COMMAND;

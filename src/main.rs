@@ -5,9 +5,8 @@ mod constants;
 mod models;
 mod services;
 
-use log::{info, warn, LevelFilter};
-// use services::config::Config;
 use crate::services::Config;
+use log::{info, warn, LevelFilter};
 use simple_logger::SimpleLogger;
 
 #[tokio::main]

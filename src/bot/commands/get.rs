@@ -9,7 +9,8 @@ use serenity::{
 };
 
 use crate::bot::utils::Utils;
-use crate::services::database::get_launch_database;
+use crate::services::database::launch::DBLaunch;
+use crate::services::database::Interface;
 use crate::services::ConnectionPool;
 use serenity::model::prelude::ReactionType::Unicode;
 
@@ -95,7 +96,8 @@ async fn upcoming(ctx: &Context, msg: &Message) -> CommandResult {
         let data = ctx.data.read().await;
         data.get::<ConnectionPool>().unwrap().clone()
     };
-    let next_launches = get_launch_database(&pool, false).await;
+
+    let next_launches = DBLaunch::get(&pool).await;
     let next_launch = match next_launches.get(0) {
         Some(launch) => launch,
         None => {

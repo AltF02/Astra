@@ -1,5 +1,5 @@
 use crate::bot::utils::{Apod, Utils};
-use crate::services::database::DBGuild;
+use crate::services::database::guild::DBGuild;
 use crate::services::{Config, ConnectionPool};
 use serenity::model::id::ChannelId;
 use serenity::prelude::Context;

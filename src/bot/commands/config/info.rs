@@ -1,6 +1,6 @@
 use crate::bot::commands::config::send_settings;
 use crate::bot::utils::Utils;
-use crate::services::database::DBGuild;
+use crate::services::database::guild::DBGuild;
 use crate::services::ConnectionPool;
 use serenity::framework::standard::macros::command;
 use serenity::framework::standard::CommandResult;

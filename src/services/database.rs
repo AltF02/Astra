@@ -1,4 +1,7 @@
-use chrono::{DateTime, Utc};
+pub mod guild;
+pub mod launch;
+
+use async_trait::async_trait;
 use serenity::prelude::TypeMapKey;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{PgPool, Pool, Postgres};
@@ -9,37 +12,17 @@ impl TypeMapKey for ConnectionPool {
     type Value = PgPool;
 }
 
-#[derive(Debug)]
-pub struct DBLaunch {
-    pub launch_id: String,
-    pub name: String,
-    pub net: DateTime<Utc>,
-    pub vid_url: Option<String>,
-    pub image_url: Option<String>,
-    pub dispatched: bool,
-    pub status: i32,
-    pub description: Option<String>,
+#[async_trait]
+pub trait Interface {
+    async fn get(pool: &PgPool) -> Vec<Self>
+    where
+        Self: Sized;
+    async fn get_limited(pool: &PgPool) -> Vec<Self>
+    where
+        Self: Sized;
 }
 
-#[derive(Debug)]
-pub struct DBGuild {
-    pub guild_id: i64,
-    pub channel_id: i64,
-    pub active: bool,
-    pub launches: bool,
-    pub apod: bool,
-    pub events: bool,
-}
-
-/*
-Status diagram:
-    1: GO,
-    2: TBD,
-    3: Success,
-    4: Failure
-*/
-
-pub(crate) async fn connect(
+pub async fn connect(
     uri: &str,
 ) -> Result<Pool<Postgres>, Box<dyn std::error::Error + Send + Sync>> {
     let pool = PgPoolOptions::new()
@@ -48,24 +31,4 @@ pub(crate) async fn connect(
         .await?;
 
     Ok(pool)
-}
-
-pub(crate) async fn get_launch_database(pool: &PgPool, limit: bool) -> Vec<DBLaunch> {
-    if limit {
-        sqlx::query_as!(
-        DBLaunch,
-        "SELECT * FROM astra.launches WHERE net <= (now() + interval '24 hours') AND status = 1;"
-        )
-        .fetch_all(pool)
-        .await
-        .unwrap()
-    } else {
-        sqlx::query_as!(
-            DBLaunch,
-            "SELECT * FROM astra.launches WHERE net > now() ORDER BY net"
-        )
-        .fetch_all(pool)
-        .await
-        .unwrap()
-    }
 }
