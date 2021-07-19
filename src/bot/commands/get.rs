@@ -12,7 +12,7 @@ use crate::bot::utils::Utils;
 use crate::extensions::ClientContextExt;
 use crate::services::database::launch::DBLaunch;
 use crate::services::database::Interface;
-use crate::services::Db;
+
 use serenity::model::prelude::ReactionType::Unicode;
 
 #[group()]

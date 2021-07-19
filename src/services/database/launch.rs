@@ -2,7 +2,7 @@ use super::Interface;
 use crate::services::Db;
 use chrono::{DateTime, Utc};
 use serenity::async_trait;
-use sqlx::PgPool;
+
 
 #[derive(Debug)]
 pub struct DBLaunch {

@@ -1,7 +1,7 @@
 use crate::bot::utils::{Apod, Utils};
 use crate::extensions::ClientContextExt;
 use crate::services::database::guild::DBGuild;
-use crate::services::{Config, Db};
+
 use serenity::model::id::ChannelId;
 use serenity::prelude::Context;
 use std::error::Error;

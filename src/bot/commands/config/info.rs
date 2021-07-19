@@ -2,7 +2,7 @@ use crate::bot::commands::config::send_settings;
 use crate::bot::utils::Utils;
 use crate::extensions::ClientContextExt;
 use crate::services::database::guild::DBGuild;
-use crate::services::Db;
+
 use serenity::framework::standard::macros::command;
 use serenity::framework::standard::CommandResult;
 use serenity::model::prelude::Message;

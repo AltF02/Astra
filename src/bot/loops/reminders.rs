@@ -3,7 +3,7 @@ use crate::constants::PLACEHOLDER;
 use crate::extensions::ClientContextExt;
 use crate::services::database::launch::DBLaunch;
 use crate::services::database::Interface;
-use crate::services::Db;
+
 use serenity::prelude::Context;
 use std::error::Error;
 use std::sync::Arc;

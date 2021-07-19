@@ -1,7 +1,7 @@
 use crate::bot::loops::apod::send_apod;
 use crate::bot::utils::Utils;
 use crate::extensions::ClientContextExt;
-use crate::services::Config;
+
 use serenity::framework::standard::macros::command;
 use serenity::framework::standard::CommandResult;
 use serenity::model::prelude::Message;

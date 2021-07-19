@@ -9,7 +9,7 @@ use serenity::model::channel::Message;
 use serenity::model::prelude::UserId;
 use serenity::prelude::*;
 use serenity::utils::Colour;
-use serenity::{framework::standard::StandardFramework, prelude::TypeMapKey, Client};
+use serenity::{framework::standard::StandardFramework, Client};
 use std::collections::HashSet;
 use std::sync::Arc;
 

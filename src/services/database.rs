@@ -5,7 +5,7 @@ use anyhow::*;
 use serenity::async_trait;
 use serenity::prelude::TypeMapKey;
 use sqlx::postgres::PgPoolOptions;
-use sqlx::{PgPool, Pool, Postgres};
+use sqlx::{PgPool};
 use std::sync::Arc;
 
 pub struct Db {

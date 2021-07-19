@@ -1,5 +1,5 @@
 use crate::services::{Config, Db};
-use anyhow::*;
+
 use serenity::{async_trait, client};
 use std::sync::Arc;
 
