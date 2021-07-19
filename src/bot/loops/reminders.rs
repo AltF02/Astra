@@ -1,8 +1,6 @@
 use crate::bot::utils::Utils;
 use crate::constants::PLACEHOLDER;
 use crate::extensions::ClientContextExt;
-use crate::services::database::launch::DBLaunch;
-use crate::services::database::Interface;
 
 use serenity::prelude::Context;
 use std::error::Error;
@@ -11,7 +9,7 @@ use std::sync::Arc;
 pub async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
     let db = ctx.get_db().await;
 
-    let next_launches = DBLaunch::get_limited(&db).await;
+    let next_launches = db.get_limited_launches().await;
     for next_launch in &next_launches {
         if next_launch.status != 1 {
             continue;

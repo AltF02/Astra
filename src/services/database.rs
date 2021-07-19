@@ -2,10 +2,9 @@ pub mod guild;
 pub mod launch;
 
 use anyhow::*;
-use serenity::async_trait;
 use serenity::prelude::TypeMapKey;
 use sqlx::postgres::PgPoolOptions;
-use sqlx::{PgPool};
+use sqlx::PgPool;
 use std::sync::Arc;
 
 pub struct Db {
@@ -24,20 +23,13 @@ impl Db {
             .await?;
         Ok(Self { pool })
     }
-}
 
-#[async_trait]
-pub trait Interface {
-    async fn get(_pool: &Db) -> Vec<Self>
-    where
-        Self: Sized,
-    {
-        unimplemented!()
-    }
-    async fn get_limited(_pool: &Db) -> Vec<Self>
-    where
-        Self: Sized,
-    {
-        unimplemented!()
+    pub async fn run_migrations(&self) -> Result<()> {
+        sqlx::migrate!("./migrations")
+            .run(&self.pool)
+            .await
+            .context("Failed to run database migrations")?;
+
+        Ok(())
     }
 }
