@@ -28,7 +28,7 @@ features = ["macros", "time"]
 [dependencies.sqlx]
 version = "0.5"
 default-features = false
-features = ["runtime-tokio-rustls", "macros", "postgres", "uuid", "offline", "chrono"]
+features = ["runtime-tokio-rustls", "macros", "postgres", "uuid", "offline", "chrono", "migrate"]
 
 [dependencies.reqwest]
 version = "0.11"

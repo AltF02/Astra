@@ -1,4 +1,4 @@
-use crate::services::{config::Config, database};
+use crate::services::{config::Config, database::Db};
 
 use events::Handler;
 use log::warn;
@@ -65,12 +65,15 @@ pub async fn start(config: Config) {
         .await
         .expect("Failed to create a new client");
 
-    let db = database::Db::new(&config.db_uri).await.unwrap();
+    let db = Db::new(&config.db_uri)
+        .await
+        .expect("Failed to initialize database");
+    db.run_migrations().await.expect("Failed to run migrations");
 
     {
         let mut data = client.data.write().await;
         data.insert::<Config>(Arc::new(config));
-        data.insert::<database::Db>(Arc::new(db));
+        data.insert::<Db>(Arc::new(db));
     }
 
     if let Err(e) = client.start_autosharded().await {
