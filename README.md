@@ -11,7 +11,7 @@ git clone https://github.com/DankDumpster/astra.git
 
 Now we need to setup sqlx and we do that by doing
 ```shell script
-cargo install --version=0.1.0-beta.1 sqlx-cli --no-default-features --features postgres
+cargo install sqlx-cli --no-default-features --features postgres
 ```
 
 Before we run we need to set the database environment variable temporarily, this is different for most shells. This is needed for the library sqlx.
