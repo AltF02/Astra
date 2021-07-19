@@ -1,13 +1,13 @@
 CREATE TABLE IF NOT EXISTS astra.guilds
 (
-    guild_id   bigint                NOT NULL
-        constraint guilds_pk
-            primary key,
-    channel_id bigint                NOT NULL,
-    active     boolean DEFAULT TRUE  NOT NULL,
-    launches   boolean DEFAULT TRUE  NOT NULL,
-    apod       boolean DEFAULT TRUE  NOT NULL,
-    events     boolean DEFAULT false NOT NULL
+    guild_id   BIGINT                NOT NULL
+        CONSTRAINT guilds_pk
+            PRIMARY KEY,
+    channel_id BIGINT                NOT NULL,
+    active     BOOLEAN DEFAULT TRUE  NOT NULL,
+    launches   BOOLEAN DEFAULT TRUE  NOT NULL,
+    apod       BOOLEAN DEFAULT TRUE  NOT NULL,
+    events     BOOLEAN DEFAULT false NOT NULL
 );
 
 ALTER TABLE astra.guilds

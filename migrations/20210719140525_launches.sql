@@ -1,14 +1,14 @@
 CREATE TABLE IF NOT EXISTS astra.launches
 (
     launch_id   TEXT                     NOT NULL
-        constraint launches_pk
-            primary key,
+        CONSTRAINT launches_pk
+            PRIMARY KEY,
     name        TEXT                     NOT NULL,
     net         TIMESTAMP WITH TIME ZONE NOT NULL,
     vid_url     TEXT,
     image_url   TEXT,
-    dispatched  boolean default false    NOT NULL,
-    status      integer                  NOT NULL,
+    dispatched  BOOLEAN DEFAULT FALSE    NOT NULL,
+    status      INTEGER                  NOT NULL,
     description TEXT
 );
 
