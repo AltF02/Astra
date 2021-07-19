@@ -1,7 +1,8 @@
 use crate::bot::loops::launches_loop;
 use crate::bot::utils::Utils;
+use crate::extensions::ClientContextExt;
 use crate::services::config::Config;
-use crate::services::ConnectionPool;
+use crate::services::Db;
 use log::info;
 use log::*;
 use serenity::{async_trait, model::prelude::*, prelude::*};
@@ -24,8 +25,7 @@ impl EventHandler for Handler {
             return;
         }
 
-        let data = ctx.data.read().await;
-        let config = data.get::<Config>().unwrap();
+        let config = ctx.get_config().await;
 
         match guild.system_channel_id {
             Some(channel) => Utils::check_msg(
@@ -112,10 +112,7 @@ impl EventHandler for Handler {
             None => reaction.user(&ctx.http).await.unwrap(),
         };
 
-        let pool = {
-            let data = ctx.data.read().await;
-            data.get::<ConnectionPool>().unwrap().clone()
-        };
+        let db = ctx.get_db().await;
 
         reaction.delete(&ctx.http).await;
         let db_user = sqlx::query!(
@@ -123,7 +120,7 @@ impl EventHandler for Handler {
             &(user.id.0 as i64),
             id,
         )
-        .fetch_optional(&pool)
+        .fetch_optional(&db.pool)
         .await;
 
         if let Err(e) = db_user {
@@ -153,7 +150,7 @@ impl EventHandler for Handler {
                     &(user.id.0 as i64),
                     &id
                 )
-                .execute(&pool)
+                .execute(&db.pool)
                 .await;
             }
             None => {
@@ -170,7 +167,7 @@ impl EventHandler for Handler {
                     &(user.id.0 as i64),
                     &id
                 )
-                .execute(&pool)
+                .execute(&db.pool)
                 .await;
             }
         }

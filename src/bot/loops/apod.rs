@@ -1,6 +1,7 @@
 use crate::bot::utils::{Apod, Utils};
+use crate::extensions::ClientContextExt;
 use crate::services::database::guild::DBGuild;
-use crate::services::{Config, ConnectionPool};
+use crate::services::{Config, Db};
 use serenity::model::id::ChannelId;
 use serenity::prelude::Context;
 use std::error::Error;
@@ -24,9 +25,8 @@ pub async fn send_apod(channel: ChannelId, ctx: &Context, apod: &Apod) {
 }
 
 pub async fn check_apod(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
-    let ctx_data = ctx.data.read().await;
-    let pool = ctx_data.get::<ConnectionPool>().unwrap().clone();
-    let config = ctx_data.get::<Config>().unwrap().clone();
+    let db = ctx.get_db().await;
+    let config = ctx.get_config().await;
 
     let apod = Utils::fetch_apod(&config.nasa_key).await?;
 
@@ -34,7 +34,7 @@ pub async fn check_apod(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
         DBGuild,
         "SELECT * FROM astra.guilds WHERE active = true AND apod = true",
     )
-    .fetch_all(&pool)
+    .fetch_all(&db.pool)
     .await?;
 
     for guild in guilds {

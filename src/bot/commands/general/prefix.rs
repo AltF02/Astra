@@ -1,13 +1,14 @@
+use crate::extensions::ClientContextExt;
 use crate::services::Config;
-use serenity::framework::standard::macros::command;
-use serenity::framework::standard::CommandResult;
-use serenity::model::prelude::Message;
-use serenity::prelude::Context;
+use serenity::{
+    framework::standard::{macros::command, CommandResult},
+    model::prelude::*,
+    prelude::*,
+};
 
 #[command]
 async fn prefix(ctx: &Context, msg: &Message) -> CommandResult {
-    let data = ctx.data.read().await;
-    let config = data.get::<Config>().unwrap();
+    let config = ctx.get_config().await;
 
     if let Err(why) = msg
         .channel_id

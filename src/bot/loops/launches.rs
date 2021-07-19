@@ -1,23 +1,23 @@
 use crate::bot::utils::Utils;
 use crate::constants::PLACEHOLDER;
+use crate::extensions::ClientContextExt;
 use crate::models::launch::{get_next_launch, Launch};
 use crate::models::url::VidURL;
-use crate::services::ConnectionPool;
+use crate::services::Db;
 use chrono::{DateTime, Utc};
 use serenity::model::prelude::ReactionType::Unicode;
 use serenity::prelude::Context;
-use sqlx::{Pool, Postgres};
 use std::error::Error;
 use std::sync::Arc;
 
 pub async fn dispatch_to_guilds(
     ctx: &Context,
     next_launch: &Launch,
-    pool: &Pool<Postgres>,
+    db: &Db,
     dt: DateTime<Utc>,
 ) -> Result<(), Box<dyn Error>> {
     let guilds = sqlx::query!("SELECT * FROM astra.guilds WHERE active = true AND launches = true")
-        .fetch_all(pool)
+        .fetch_all(&db.pool)
         .await?;
 
     let remaining_str = Utils::convert_time_into_str(dt - chrono::offset::Utc::now());
@@ -107,10 +107,7 @@ pub async fn dispatch_to_guilds(
 }
 
 pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
-    let pool = {
-        let data = ctx.data.read().await;
-        data.get::<ConnectionPool>().unwrap().clone()
-    };
+    let db = ctx.get_db().await;
 
     let next_launches = get_next_launch().await?;
     for next_launch in &next_launches.results {
@@ -122,7 +119,7 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
             "SELECT dispatched, net FROM astra.launches WHERE launch_id = $1 AND dispatched = true",
             next_launch.id
         )
-        .fetch_optional(&pool)
+        .fetch_optional(&db.pool)
         .await?;
 
         match launch_db {
@@ -131,7 +128,7 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
                     sqlx::query!(
                         "UPDATE astra.launches SET net = $1, dispatched = false WHERE launch_id = $2",
                         next_launch.net, next_launch.id)
-                        .execute(&pool)
+                        .execute(&db.pool)
                         .await?;
                 }
                 return Ok(());
@@ -140,7 +137,7 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
                 let dt = next_launch.net;
                 if 24 >= (dt - now).num_hours() && launch_stamp > &now && next_launch.status.id == 1
                 {
-                    dispatch_to_guilds(&ctx, &next_launch, &pool, dt).await?;
+                    dispatch_to_guilds(&ctx, &next_launch, &db, dt).await?;
                     dispatched = true;
                 }
             }
@@ -171,7 +168,7 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
             next_launch.status.id as i32,
             desc
         )
-        .execute(&pool)
+        .execute(&db.pool)
         .await?;
     }
 

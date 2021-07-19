@@ -1,19 +1,17 @@
 use crate::bot::utils::Utils;
 use crate::constants::PLACEHOLDER;
+use crate::extensions::ClientContextExt;
 use crate::services::database::launch::DBLaunch;
 use crate::services::database::Interface;
-use crate::services::ConnectionPool;
+use crate::services::Db;
 use serenity::prelude::Context;
 use std::error::Error;
 use std::sync::Arc;
 
 pub async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
-    let pool = {
-        let data = ctx.data.read().await;
-        data.get::<ConnectionPool>().unwrap().clone()
-    };
+    let db = ctx.get_db().await;
 
-    let next_launches = DBLaunch::get_limited(&pool).await;
+    let next_launches = DBLaunch::get_limited(&db).await;
     for next_launch in &next_launches {
         if next_launch.status != 1 {
             continue;
@@ -33,7 +31,7 @@ pub async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
             "SELECT user_id FROM astra.reminders WHERE launch_id = $1",
             next_launch.launch_id
         )
-        .fetch_all(&pool)
+        .fetch_all(&db.pool)
         .await?;
 
         let mut stream = "I'm unaware of any stream :(".to_string();

@@ -1,4 +1,5 @@
-use crate::services::ConnectionPool;
+use crate::extensions::ClientContextExt;
+use crate::services::Db;
 use serenity::framework::standard::macros::command;
 use serenity::framework::standard::{Args, CommandResult};
 use serenity::model::prelude::Message;
@@ -6,10 +7,7 @@ use serenity::prelude::Context;
 
 #[command]
 pub async fn set(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-    let pool = {
-        let data = ctx.data.read().await;
-        data.get::<ConnectionPool>().unwrap().clone()
-    };
+    let db = ctx.get_db().await;
 
     let option = match args.single_quoted::<String>() {
         Ok(arg) => arg,
@@ -31,7 +29,7 @@ pub async fn set(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult 
                 "UPDATE astra.guilds SET apod = NOT apod WHERE guild_id = $1",
                 guild_id
             )
-            .execute(&pool)
+            .execute(&db.pool)
             .await?;
         }
         "launches" => {
@@ -39,7 +37,7 @@ pub async fn set(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult 
                 "UPDATE astra.guilds SET launches = NOT launches WHERE guild_id = $1",
                 guild_id
             )
-            .execute(&pool)
+            .execute(&db.pool)
             .await?;
         }
         "events" => {
@@ -47,7 +45,7 @@ pub async fn set(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult 
                 "UPDATE astra.guilds SET events = NOT events WHERE guild_id = $1",
                 guild_id
             )
-            .execute(&pool)
+            .execute(&db.pool)
             .await?;
         }
         &_ => {

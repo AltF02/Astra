@@ -11,15 +11,12 @@ use serenity::prelude::*;
 use serenity::utils::Colour;
 use serenity::{framework::standard::StandardFramework, prelude::TypeMapKey, Client};
 use std::collections::HashSet;
+use std::sync::Arc;
 
 mod commands;
 mod events;
 mod loops;
 mod utils;
-
-impl TypeMapKey for Config {
-    type Value = Config;
-}
 
 #[help]
 #[command_not_found_text = "Could not find: `{}`."]
@@ -68,12 +65,12 @@ pub async fn start(config: Config) {
         .await
         .expect("Failed to create a new client");
 
-    let pool = database::connect(&config.db_uri).await.unwrap();
+    let db = database::Db::new(&config.db_uri).await.unwrap();
 
     {
         let mut data = client.data.write().await;
-        data.insert::<Config>(config);
-        data.insert::<database::ConnectionPool>(pool);
+        data.insert::<Config>(Arc::new(config));
+        data.insert::<database::Db>(Arc::new(db));
     }
 
     if let Err(e) = client.start_autosharded().await {

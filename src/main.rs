@@ -2,6 +2,7 @@
 
 mod bot;
 mod constants;
+mod extensions;
 mod models;
 mod services;
 

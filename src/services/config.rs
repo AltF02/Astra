@@ -1,9 +1,11 @@
 use crate::constants::{DEFAULT_LOCATION, ENV_VAR};
 use log::info;
 use serde::{Deserialize, Serialize};
+use serenity::prelude::TypeMapKey;
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
+use std::sync::Arc;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
@@ -13,6 +15,10 @@ pub struct Config {
     pub nasa_key: String,
     pub log_channel_id: u64,
     pub emotes: Emotes,
+}
+
+impl TypeMapKey for Config {
+    type Value = Arc<Config>;
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

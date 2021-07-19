@@ -10,6 +10,7 @@ use self::channel::CHANNEL_COMMAND;
 use self::info::CONFIG_INFO_COMMAND;
 use self::set::SET_COMMAND;
 
+use crate::extensions::ClientContextExt;
 use serenity::model::prelude::*;
 use serenity::{framework::standard::macros::group, model::channel::Message, prelude::*};
 
@@ -23,8 +24,7 @@ pub fn format_setting(setting: bool, name: &str, config: &BotConfig) -> String {
 }
 
 async fn send_settings(guild_db: &DBGuild, msg: &Message, ctx: &Context, guild: &Guild) {
-    let data = ctx.data.read().await;
-    let config = data.get::<BotConfig>().unwrap();
+    let config = ctx.get_config().await;
     let mut settings: String = "".to_string();
 
     settings.push_str(format_setting(guild_db.launches, "Launches", &config).as_str());

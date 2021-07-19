@@ -9,9 +9,10 @@ use serenity::{
 };
 
 use crate::bot::utils::Utils;
+use crate::extensions::ClientContextExt;
 use crate::services::database::launch::DBLaunch;
 use crate::services::database::Interface;
-use crate::services::ConnectionPool;
+use crate::services::Db;
 use serenity::model::prelude::ReactionType::Unicode;
 
 #[group()]
@@ -92,12 +93,9 @@ async fn agency(_ctx: &Context, _msg: &Message, _args: Args) -> CommandResult {
 #[command]
 #[aliases("upcoming_launch", "next", "launch")]
 async fn upcoming(ctx: &Context, msg: &Message) -> CommandResult {
-    let pool = {
-        let data = ctx.data.read().await;
-        data.get::<ConnectionPool>().unwrap().clone()
-    };
+    let db = ctx.get_db().await;
 
-    let next_launches = DBLaunch::get(&pool).await;
+    let next_launches = DBLaunch::get(&db).await;
     let next_launch = match next_launches.get(0) {
         Some(launch) => launch,
         None => {

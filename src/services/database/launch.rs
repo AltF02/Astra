@@ -1,6 +1,7 @@
 use super::Interface;
-use async_trait::async_trait;
+use crate::services::Db;
 use chrono::{DateTime, Utc};
+use serenity::async_trait;
 use sqlx::PgPool;
 
 #[derive(Debug)]
@@ -17,22 +18,22 @@ pub struct DBLaunch {
 
 #[async_trait]
 impl Interface for DBLaunch {
-    async fn get(pool: &PgPool) -> Vec<Self> {
+    async fn get(db: &Db) -> Vec<Self> {
         sqlx::query_as!(
             DBLaunch,
             "SELECT * FROM astra.launches WHERE net > now() ORDER BY net"
         )
-        .fetch_all(pool)
+        .fetch_all(&db.pool)
         .await
         .unwrap()
     }
 
-    async fn get_limited(pool: &PgPool) -> Vec<Self> {
+    async fn get_limited(db: &Db) -> Vec<Self> {
         sqlx::query_as!(
             DBLaunch,
             "SELECT * FROM astra.launches WHERE net <= (now() + interval '24 hours') AND status = 1;"
         )
-        .fetch_all(pool)
+        .fetch_all(&db.pool)
         .await
         .unwrap()
     }

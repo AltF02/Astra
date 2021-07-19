@@ -1,5 +1,6 @@
 use crate::bot::loops::apod::send_apod;
 use crate::bot::utils::Utils;
+use crate::extensions::ClientContextExt;
 use crate::services::Config;
 use serenity::framework::standard::macros::command;
 use serenity::framework::standard::CommandResult;
@@ -8,8 +9,7 @@ use serenity::prelude::Context;
 
 #[command]
 pub async fn daily(ctx: &Context, msg: &Message) -> CommandResult {
-    let data = ctx.data.read().await;
-    let config = data.get::<Config>().unwrap();
+    let config = ctx.get_config().await;
 
     match Utils::fetch_apod(&config.nasa_key).await {
         Ok(body) => {
