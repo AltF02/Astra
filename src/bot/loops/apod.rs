@@ -1,6 +1,6 @@
 use crate::bot::utils::{Apod, Utils};
 use crate::extensions::ClientContextExt;
-use crate::services::database::guild::DBGuild;
+use crate::services::database::guild::Query;
 
 use serenity::model::id::ChannelId;
 use serenity::prelude::Context;
@@ -25,17 +25,11 @@ pub async fn send_apod(channel: ChannelId, ctx: &Context, apod: &Apod) {
 }
 
 pub async fn check_apod(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
-    let db = ctx.get_db().await;
-    let config = ctx.get_config().await;
+    let (db, config) = ctx.get_db_and_config().await;
 
     let apod = Utils::fetch_apod(&config.nasa_key).await?;
 
-    let guilds: Vec<DBGuild> = sqlx::query_as!(
-        DBGuild,
-        "SELECT * FROM astra.guilds WHERE active = true AND apod = true",
-    )
-    .fetch_all(&db.pool)
-    .await?;
+    let guilds = db.get_guilds_queried(true, Query::APOD).await;
 
     for guild in guilds {
         if let Some(channel) = Utils::fetch_channel_forced(&ctx, guild.channel_id as u64).await {

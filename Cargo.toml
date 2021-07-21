@@ -19,7 +19,7 @@ anyhow = "1.0.42"
 
 [dependencies.serenity]
 version = "0.10"
-features = ["framework", "standard_framework", "rustls_backend", "cache", "collector"]
+features = ["framework", "standard_framework", "rustls_backend", "cache", "collector", "utils", "unstable_discord_api"]
 
 [dependencies.tokio]
 version = "1"

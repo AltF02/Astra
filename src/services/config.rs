@@ -10,6 +10,7 @@ use std::sync::Arc;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
     pub token: String,
+    pub application_id: u64,
     pub prefix: String,
     pub db_uri: String,
     pub nasa_key: String,
@@ -38,6 +39,7 @@ impl Config {
                 if prompt("Do you want to configure the config.yml now? (y/n)") == "y" {
                     conf = Config {
                         token: prompt("Discord Bot Token"),
+                        application_id: 0,
                         prefix: prompt("Bot Prefix"),
                         db_uri: prompt("Database Uri"),
                         nasa_key: prompt("Nasa models key"),
@@ -51,6 +53,7 @@ impl Config {
                 } else {
                     conf = Config {
                         token: String::new(),
+                        application_id: 0,
                         prefix: String::from(";"),
                         db_uri: String::new(),
                         nasa_key: String::new(),

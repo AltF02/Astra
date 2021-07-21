@@ -7,15 +7,15 @@ use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use std::sync::Arc;
 
-pub struct Db {
+pub struct DB {
     pub pool: PgPool,
 }
 
-impl TypeMapKey for Db {
-    type Value = Arc<Db>;
+impl TypeMapKey for DB {
+    type Value = Arc<DB>;
 }
 
-impl Db {
+impl DB {
     pub async fn new(uri: &str) -> Result<Self> {
         let pool = PgPoolOptions::new()
             .max_connections(20)

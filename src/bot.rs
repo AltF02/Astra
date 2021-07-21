@@ -1,9 +1,14 @@
-use crate::services::{config::Config, database::Db};
+use crate::services::{config::Config, database::DB};
 
 use events::Handler;
 use log::warn;
 use serenity::framework::standard::{
-    help_commands, macros::help, Args, CommandGroup, CommandResult, HelpOptions,
+    help_commands,
+    macros::help,
+    Args,
+    CommandGroup,
+    CommandResult,
+    HelpOptions,
 };
 use serenity::model::channel::Message;
 use serenity::model::prelude::UserId;
@@ -62,18 +67,20 @@ pub async fn start(config: Config) {
         .event_handler(Handler {
             run_loops: Mutex::new(true),
         })
+        .application_id(config.application_id)
         .await
         .expect("Failed to create a new client");
 
-    let db = Db::new(&config.db_uri)
+    let db = DB::new(&config.db_uri)
         .await
         .expect("Failed to initialize database");
+
     db.run_migrations().await.expect("Failed to run migrations");
 
     {
         let mut data = client.data.write().await;
         data.insert::<Config>(Arc::new(config));
-        data.insert::<Db>(Arc::new(db));
+        data.insert::<DB>(Arc::new(db));
     }
 
     if let Err(e) = client.start_autosharded().await {

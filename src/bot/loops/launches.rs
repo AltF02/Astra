@@ -3,7 +3,8 @@ use crate::constants::PLACEHOLDER;
 use crate::extensions::ClientContextExt;
 use crate::models::launch::{get_next_launch, Launch};
 use crate::models::url::VidURL;
-use crate::services::Db;
+use crate::services::database::guild::Query;
+use crate::services::DB;
 use chrono::{DateTime, Utc};
 use serenity::model::prelude::ReactionType::Unicode;
 use serenity::prelude::Context;
@@ -13,12 +14,10 @@ use std::sync::Arc;
 pub async fn dispatch_to_guilds(
     ctx: &Context,
     next_launch: &Launch,
-    db: &Db,
+    db: &DB,
     dt: DateTime<Utc>,
 ) -> Result<(), Box<dyn Error>> {
-    let guilds = sqlx::query!("SELECT * FROM astra.guilds WHERE active = true AND launches = true")
-        .fetch_all(&db.pool)
-        .await?;
+    let guilds = db.get_guilds_queried(true, Query::LAUNCHES).await;
 
     let remaining_str = Utils::convert_time_into_str(dt - chrono::offset::Utc::now());
     for guild in guilds {

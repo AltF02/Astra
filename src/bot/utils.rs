@@ -1,3 +1,4 @@
+use crate::constants::APOD_URL;
 use chrono::Duration;
 use log::warn;
 use regex::Regex;
@@ -128,12 +129,7 @@ impl Utils {
     }
 
     pub async fn fetch_apod(key: &str) -> Result<Apod, ApodError> {
-        let res = match reqwest::get(&*format!(
-            "https://models.nasa.gov/planetary/apod?api_key={}",
-            key
-        ))
-        .await
-        {
+        let res = match reqwest::get(format!("{}{}", APOD_URL, key)).await {
             Ok(res) => res,
             Err(e) => return Err(ApodError::new(format!("Reqwest error {}", e).as_str())),
         };
