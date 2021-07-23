@@ -1,4 +1,5 @@
 #![allow(clippy::blocks_in_if_conditions)]
+#![allow(clippy::ptr_arg)]
 
 mod bot;
 mod constants;

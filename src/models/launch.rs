@@ -7,9 +7,11 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::error::Error;
 
+pub type LaunchID = String;
+
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Launch {
-    pub id: String,
+    pub id: LaunchID,
     pub url: String,
     pub slug: String,
     pub name: String,
@@ -27,15 +29,16 @@ pub struct Launch {
     #[serde(alias = "vidURLs")]
     pub vid_urls: Vec<VidURL>,
 }
+impl Launch {
+    pub async fn get_next_launch<'a>() -> Result<ApiResult<Launch>, Box<dyn Error>> {
+        let res = reqwest::get(&format!(
+            "{}/launch/upcoming/?format=json&mode=detailed",
+            BASE_URL
+        ))
+        .await?
+        .json::<ApiResult<Launch>>()
+        .await?;
 
-pub async fn get_next_launch<'a>() -> Result<ApiResult<Launch>, Box<dyn Error>> {
-    let res = reqwest::get(&format!(
-        "{}/launch/upcoming/?format=json&mode=detailed",
-        BASE_URL
-    ))
-    .await?
-    .json::<ApiResult<Launch>>()
-    .await?;
-
-    Ok(res)
+        Ok(res)
+    }
 }

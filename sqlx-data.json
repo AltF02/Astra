@@ -50,32 +50,6 @@
       ]
     }
   },
-  "36769fe2fb288cbb264c22b2d10971dff1c8154672bec311b1ee8b05c96a8875": {
-    "query": "SELECT dispatched, net FROM astra.launches WHERE launch_id = $1 AND dispatched = true",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "dispatched",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 1,
-          "name": "net",
-          "type_info": "Timestamptz"
-        }
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      },
-      "nullable": [
-        false,
-        false
-      ]
-    }
-  },
   "3822086119b2ac5b3caacb3dd101d0866ecbcca142d04becd2df667334349afb": {
     "query": "UPDATE astra.guilds SET apod = NOT apod WHERE guild_id = $1",
     "describe": {

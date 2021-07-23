@@ -1,7 +1,7 @@
 use crate::bot::utils::Utils;
 use crate::constants::PLACEHOLDER;
 use crate::extensions::ClientContextExt;
-use crate::models::launch::{get_next_launch, Launch};
+use crate::models::launch::Launch;
 use crate::models::url::VidURL;
 use crate::services::database::guild::Query;
 use crate::services::DB;
@@ -108,18 +108,13 @@ pub async fn dispatch_to_guilds(
 pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
     let db = ctx.get_db().await;
 
-    let next_launches = get_next_launch().await?;
+    let next_launches = Launch::get_next_launch().await?;
     for next_launch in &next_launches.results {
         let mut dispatched: bool = false;
         let launch_stamp = &next_launch.net;
         let now = chrono::offset::Utc::now();
 
-        let launch_db = sqlx::query!(
-            "SELECT dispatched, net FROM astra.launches WHERE launch_id = $1 AND dispatched = true",
-            next_launch.id
-        )
-        .fetch_optional(&db.pool)
-        .await?;
+        let launch_db = db.get_launch(&next_launch.id, true).await;
 
         match launch_db {
             Some(launch) => {
