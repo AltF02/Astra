@@ -50,235 +50,6 @@
       ]
     }
   },
-  "0825167dc9513f76a9f116a5500b9cdc6fd9a05ab8fa879472e70fed1ef821cf": {
-    "query": "SELECT * FROM astra.launches WHERE net > now() ORDER BY net",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "launch_id",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 1,
-          "name": "name",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 2,
-          "name": "net",
-          "type_info": "Timestamptz"
-        },
-        {
-          "ordinal": 3,
-          "name": "vid_url",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 4,
-          "name": "image_url",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 5,
-          "name": "dispatched",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 6,
-          "name": "status",
-          "type_info": "Int4"
-        },
-        {
-          "ordinal": 7,
-          "name": "description",
-          "type_info": "Text"
-        }
-      ],
-      "parameters": {
-        "Left": []
-      },
-      "nullable": [
-        false,
-        false,
-        false,
-        true,
-        true,
-        false,
-        false,
-        true
-      ]
-    }
-  },
-  "08fefb36c8eac555555f5ad01fa382781e71b59677acf28403d44fa3a890fe10": {
-    "query": "SELECT * FROM astra.launches WHERE net <= (now() + interval '24 hours') AND status = 1;",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "launch_id",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 1,
-          "name": "name",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 2,
-          "name": "net",
-          "type_info": "Timestamptz"
-        },
-        {
-          "ordinal": 3,
-          "name": "vid_url",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 4,
-          "name": "image_url",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 5,
-          "name": "dispatched",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 6,
-          "name": "status",
-          "type_info": "Int4"
-        },
-        {
-          "ordinal": 7,
-          "name": "description",
-          "type_info": "Text"
-        }
-      ],
-      "parameters": {
-        "Left": []
-      },
-      "nullable": [
-        false,
-        false,
-        false,
-        true,
-        true,
-        false,
-        false,
-        true
-      ]
-    }
-  },
-  "0ac08c3ce35157da8163670a4c70593828bb0372cf89dea480c6cee0a100d0d8": {
-    "query": "SELECT * FROM astra.guilds WHERE active = true AND launches = true",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "guild_id",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 1,
-          "name": "channel_id",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 2,
-          "name": "active",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 3,
-          "name": "launches",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 4,
-          "name": "apod",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 5,
-          "name": "events",
-          "type_info": "Bool"
-        }
-      ],
-      "parameters": {
-        "Left": []
-      },
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ]
-    }
-  },
-  "0f349280e0d03292ea2714d5ff8e35bbeca75254b98285c64e0a12b954b276c3": {
-    "query": "SELECT * FROM astra.guilds WHERE active = true AND apod = true",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "guild_id",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 1,
-          "name": "channel_id",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 2,
-          "name": "active",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 3,
-          "name": "launches",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 4,
-          "name": "apod",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 5,
-          "name": "events",
-          "type_info": "Bool"
-        }
-      ],
-      "parameters": {
-        "Left": []
-      },
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ]
-    }
-  },
-  "220fda0c66381ca71f9783cbc17703cb035029eb9598a5674408620fdcf02b7f": {
-    "query": "UPDATE astra.launches SET net = $1, dispatched = false WHERE launch_id = $2",
-    "describe": {
-      "columns": [],
-      "parameters": {
-        "Left": [
-          "Timestamptz",
-          "Text"
-        ]
-      },
-      "nullable": []
-    }
-  },
   "36769fe2fb288cbb264c22b2d10971dff1c8154672bec311b1ee8b05c96a8875": {
     "query": "SELECT dispatched, net FROM astra.launches WHERE launch_id = $1 AND dispatched = true",
     "describe": {
@@ -422,6 +193,19 @@
         "Left": [
           "Int8",
           "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "a9c42ba7095455018db1c92aa238f6946b655efde43efbb2e9299d10ca72ee78": {
+    "query": "UPDATE astra.launches SET net = $1 WHERE launch_id = $2",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Timestamptz",
+          "Text"
         ]
       },
       "nullable": []

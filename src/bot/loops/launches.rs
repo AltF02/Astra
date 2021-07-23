@@ -125,10 +125,12 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
             Some(launch) => {
                 if next_launch.net != launch.net {
                     sqlx::query!(
-                        "UPDATE astra.launches SET net = $1, dispatched = false WHERE launch_id = $2",
-                        next_launch.net, next_launch.id)
-                        .execute(&db.pool)
-                        .await?;
+                        "UPDATE astra.launches SET net = $1 WHERE launch_id = $2",
+                        next_launch.net,
+                        next_launch.id
+                    )
+                    .execute(&db.pool)
+                    .await?;
                 }
                 return Ok(());
             }
