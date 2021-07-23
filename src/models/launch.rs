@@ -24,8 +24,6 @@ pub struct Launch {
     pub failreason: Option<String>,
     pub rocket: Rocket,
     pub mission: Option<Mission>,
-    // #[serde(alias = "infoURLs")]
-    // pub info_urls: Vec<String>,
     #[serde(alias = "vidURLs")]
     pub vid_urls: Vec<VidURL>,
 }
