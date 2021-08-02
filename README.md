@@ -2,7 +2,7 @@
 ![Build](https://github.com/DankDumpster/mouse-rs/workflows/Rust/badge.svg?style=flat-square)
 [![Discord Bots](https://top.gg/api/widget/status/675542011457044512.svg)](https://top.gg/bot/675542011457044512)
 
-Astra is a discord bot written in rust to keep you reminded on rocket launches and more! An always online bot is available **[here](https://discord.com/oauth2/authorize?client_id=675542011457044512&permissions=60480&scope=bot)**
+Astra is a discord bot written in rust to keep you reminded on rocket launches and more! An always online bot is available **[here](https://discord.com/oauth2/authorize?client_id=675542011457044512&permissions=2147806272&scope=bot)**
 ## How to start
 Clone the repo with 
 ```shell script
