@@ -8,6 +8,9 @@ license = "Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[profile.release]
+lto = "thin"
+
 [dependencies]
 log = "0.4.11"
 serde = "1.0.115"
