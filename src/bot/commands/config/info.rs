@@ -22,11 +22,11 @@ pub async fn config_info(ctx: &Context, msg: &Message) -> CommandResult {
     .await?;
 
     match guild_db {
-        Some(guild_db) => send_settings(&guild_db, &msg, &ctx, &guild).await,
+        Some(guild_db) => send_settings(&guild_db, msg, ctx, &guild).await,
         None => {
             Utils::reply(
-                &ctx,
-                &msg,
+                ctx,
+                msg,
                 "Guild not configured please run `>config channel #channel`",
             )
             .await;

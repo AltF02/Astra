@@ -12,17 +12,17 @@ pub struct DBGuild {
 }
 
 pub enum Query {
-    LAUNCHES,
-    EVENTS,
-    APOD,
+    Launches,
+    Events,
+    Apod,
 }
 
 impl std::fmt::Display for Query {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn fmt<'a>(&self, f: &mut Formatter<'a>) -> std::fmt::Result {
         match self {
-            Query::LAUNCHES => write!(f, "launches"),
-            Query::EVENTS => write!(f, "events"),
-            Query::APOD => write!(f, "apod"),
+            Query::Launches => write!(f, "launches"),
+            Query::Events => write!(f, "events"),
+            Query::Apod => write!(f, "apod"),
         }
     }
 }

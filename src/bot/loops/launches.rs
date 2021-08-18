@@ -17,12 +17,12 @@ pub async fn dispatch_to_guilds(
     db: &DB,
     dt: DateTime<Utc>,
 ) -> Result<(), Box<dyn Error>> {
-    let guilds = db.get_guilds_queried(true, Query::LAUNCHES).await;
+    let guilds = db.get_guilds_queried(true, Query::Launches).await;
 
     let remaining_str = Utils::convert_time_into_str(dt - chrono::offset::Utc::now());
     for guild in guilds {
         let channel_id = guild.channel_id as u64;
-        let channel = match Utils::fetch_channel_forced(&ctx, channel_id).await {
+        let channel = match Utils::fetch_channel_forced(ctx, channel_id).await {
             Some(channel) => channel,
             None => {
                 continue;
@@ -133,7 +133,7 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
                 let dt = next_launch.net;
                 if 24 >= (dt - now).num_hours() && launch_stamp > &now && next_launch.status.id == 1
                 {
-                    dispatch_to_guilds(&ctx, &next_launch, &db, dt).await?;
+                    dispatch_to_guilds(&ctx, next_launch, &db, dt).await?;
                     dispatched = true;
                 }
             }

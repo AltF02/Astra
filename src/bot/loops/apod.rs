@@ -29,7 +29,7 @@ pub async fn check_apod(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
 
     let apod = Utils::fetch_apod(&config.nasa_key).await?;
 
-    let guilds = db.get_guilds_queried(true, Query::APOD).await;
+    let guilds = db.get_guilds_queried(true, Query::Apod).await;
 
     for guild in guilds {
         if let Some(channel) = Utils::fetch_channel_forced(&ctx, guild.channel_id as u64).await {
