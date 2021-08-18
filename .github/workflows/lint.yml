@@ -32,7 +32,7 @@ jobs:
       - name: Run clippy
         uses: actions-rs/clippy-check@v1
         with:
-          token: ${{ secrets.TOKEN_GITHUB }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           args: --workspace --tests
 
   rustfmt:
