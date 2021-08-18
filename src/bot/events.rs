@@ -2,7 +2,6 @@ use crate::bot::loops::launches_loop;
 use crate::bot::utils::Utils;
 use crate::extensions::ClientContextExt;
 
-
 use log::info;
 use log::*;
 use serenity::{async_trait, model::prelude::*, prelude::*};

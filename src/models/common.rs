@@ -19,7 +19,8 @@ pub struct ExpeditionCommon {
     pub name: String,
     pub start: Option<DateTime<FixedOffset>>,
     pub end: Option<DateTime<FixedOffset>>,
-    pub spacestation: SpaceStationCommon,
+    #[serde(alias = "spacestation")]
+    pub space_station: SpaceStationCommon,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
