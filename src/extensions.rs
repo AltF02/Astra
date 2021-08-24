@@ -1,6 +1,35 @@
+// Most of this was stolen from https://github.com/unixporn/robbb/blob/master/src/extensions.rs
+// The MIT License (MIT)
+//
+// Copyright (c) 2021 ElKowar
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 use crate::services::{Config, DB};
 
+use crate::bot::embeds::create_basic_embed;
+use anyhow::{Context, Result};
+use serenity::builder::CreateEmbed;
+use serenity::model::prelude::Message;
 use serenity::{async_trait, client};
+use std::fmt::Display;
 use std::sync::Arc;
 
 #[async_trait]
@@ -24,5 +53,50 @@ impl ClientContextExt for client::Context {
         let db = self.get_db().await;
         let config = self.get_config().await;
         (db, config)
+    }
+}
+
+#[async_trait]
+pub trait MessageExt {
+    async fn reply_embed<F>(&self, ctx: &client::Context, build: F) -> Result<Message>
+    where
+        F: FnOnce(&mut CreateEmbed) + Send + Sync;
+
+    async fn reply_error(
+        &self,
+        ctx: &client::Context,
+        s: impl Display + Send + Sync + 'static,
+    ) -> Result<Message>;
+}
+
+#[async_trait]
+impl MessageExt for Message {
+    async fn reply_embed<F>(&self, ctx: &client::Context, build: F) -> Result<Message>
+    where
+        F: FnOnce(&mut CreateEmbed) + Send + Sync,
+    {
+        let mut e = create_basic_embed().await;
+        build(&mut e);
+
+        self.channel_id
+            .send_message(ctx, move |m| {
+                m.allowed_mentions(|f| f.replied_user(false));
+                m.reference_message(self);
+                m.set_embed(e)
+            })
+            .await
+            .context("Failed to send embed")
+    }
+
+    async fn reply_error(
+        &self,
+        ctx: &client::Context,
+        s: impl Display + Send + Sync + 'static,
+    ) -> Result<Message> {
+        self.reply_embed(ctx, |e| {
+            e.description(format!("{}", s));
+            e.color(0xe91714);
+        })
+        .await
     }
 }

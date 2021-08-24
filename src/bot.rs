@@ -19,7 +19,9 @@ use std::collections::HashSet;
 use std::sync::Arc;
 
 mod commands;
+pub mod embeds;
 mod events;
+mod hooks;
 mod loops;
 mod utils;
 
@@ -56,6 +58,7 @@ pub async fn start(config: Config) {
             c.case_insensitivity(true);
             c
         })
+        .on_dispatch_error(hooks::dispatch_error_hook)
         .group(&commands::general::COMMANDS_GROUP)
         .group(&commands::nasa::NASA_GROUP)
         .group(&commands::get::GET_GROUP)
@@ -70,6 +73,8 @@ pub async fn start(config: Config) {
         .application_id(config.application_id)
         .await
         .expect("Failed to create a new client");
+
+    client.cache_and_http.cache.set_max_messages(500).await;
 
     let db = DB::new(&config.db_uri)
         .await
