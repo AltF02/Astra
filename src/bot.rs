@@ -74,8 +74,6 @@ pub async fn start(config: Config) {
         .await
         .expect("Failed to create a new client");
 
-    client.cache_and_http.cache.set_max_messages(500).await;
-
     let db = DB::new(&config.db_uri)
         .await
         .expect("Failed to initialize database");
