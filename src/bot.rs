@@ -3,12 +3,7 @@ use crate::services::{config::Config, database::DB};
 use events::Handler;
 use log::warn;
 use serenity::framework::standard::{
-    help_commands,
-    macros::help,
-    Args,
-    CommandGroup,
-    CommandResult,
-    HelpOptions,
+    help_commands, macros::help, Args, CommandGroup, CommandResult, HelpOptions,
 };
 use serenity::model::channel::Message;
 use serenity::model::prelude::UserId;

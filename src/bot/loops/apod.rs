@@ -27,7 +27,7 @@ pub async fn send_apod(channel: ChannelId, ctx: &Context, apod: &Apod) {
 pub async fn check_apod(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
     let (db, config) = ctx.get_db_and_config().await;
 
-    let apod = Utils::fetch_apod(&config.nasa_key).await?;
+    let apod = Apod::fetch(&config.nasa_key).await?;
 
     let guilds = db.get_guilds_queried(true, Query::Apod).await;
 

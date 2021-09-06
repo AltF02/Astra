@@ -7,7 +7,7 @@ use serenity::model::user::User;
 use serenity::prelude::*;
 use serenity::Result as SerenityResult;
 use std::error::Error;
-use std::fmt;
+use std::fmt::{self};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Apod {
@@ -19,6 +19,27 @@ pub struct Apod {
     pub title: String,
 }
 
+impl Apod {
+    pub async fn fetch(key: &String) -> Result<Self, ApodError> {
+        let res = match reqwest::get(format!("{}{}", APOD_URL, key)).await {
+            Ok(res) => res,
+            Err(e) => return Err(ApodError::new(format!("Reqwest error {}", e).as_str())),
+        };
+
+        if !res.status().is_success() {
+            return Err(ApodError::new(
+                format!("Status code incorrect: {}", res.status().as_u16()).as_str(),
+            ));
+        }
+
+        return match res.json::<Apod>().await {
+            Ok(apod) => Ok(apod),
+            Err(e) => Err(ApodError::new(
+                format!("Reqwest json error: {}", e).as_str(),
+            )),
+        };
+    }
+}
 #[derive(Debug)]
 pub struct ApodError {
     details: String,
@@ -101,25 +122,5 @@ impl Utils {
         } else {
             None
         }
-    }
-
-    pub async fn fetch_apod(key: &str) -> Result<Apod, ApodError> {
-        let res = match reqwest::get(format!("{}{}", APOD_URL, key)).await {
-            Ok(res) => res,
-            Err(e) => return Err(ApodError::new(format!("Reqwest error {}", e).as_str())),
-        };
-
-        if !res.status().is_success() {
-            return Err(ApodError::new(
-                format!("Status code incorrect: {}", res.status().as_u16()).as_str(),
-            ));
-        }
-
-        return match res.json::<Apod>().await {
-            Ok(apod) => Ok(apod),
-            Err(e) => Err(ApodError::new(
-                format!("Reqwest json error: {}", e).as_str(),
-            )),
-        };
     }
 }

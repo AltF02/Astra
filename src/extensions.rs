@@ -100,7 +100,6 @@ impl MessageExt for Message {
         ctx: &client::Context,
         s: impl Display + Send + Sync + 'static,
     ) -> Result<Message> {
-
         self.reply_embed(&ctx, |e| {
             e.description(format!("{}", s));
             e.color(0xb8bb26);
