@@ -20,6 +20,11 @@ Before we run we need to set the database environment variable temporarily, this
 ```shell script
 set DATABASE_URL=postgres://postgres:postgres@localhost/postgres
 ```
+#### sh
+```shell script
+export DATBASE_URL=postgres://postgres:postgres@localhost/postgres
+```
+
 #### fish
 ```shell script
 set -g -x  DATABASE_URL "postgres://postgres:postgres@localhost/postgres"
