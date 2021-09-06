@@ -1,6 +1,5 @@
 use crate::bot::commands::config::send_settings;
-use crate::bot::utils::Utils;
-use crate::extensions::ClientContextExt;
+use crate::extensions::{ClientContextExt, MessageExt};
 use crate::services::database::guild::DBGuild;
 
 use serenity::framework::standard::macros::command;
@@ -24,12 +23,11 @@ pub async fn config_info(ctx: &Context, msg: &Message) -> CommandResult {
     match guild_db {
         Some(guild_db) => send_settings(&guild_db, msg, ctx, &guild).await,
         None => {
-            Utils::reply(
+            msg.reply_error(
                 ctx,
-                msg,
                 "Guild not configured please run `>config channel #channel`",
             )
-            .await;
+            .await?;
         }
     };
     Ok(())

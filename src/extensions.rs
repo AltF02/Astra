@@ -26,6 +26,7 @@ use crate::services::{Config, DB};
 
 use crate::bot::embeds::create_basic_embed;
 use anyhow::{Context, Result};
+use chrono::Duration;
 use serenity::builder::CreateEmbed;
 use serenity::model::prelude::Message;
 use serenity::{async_trait, client};
@@ -62,6 +63,12 @@ pub trait MessageExt {
     where
         F: FnOnce(&mut CreateEmbed) + Send + Sync;
 
+    async fn reply_success(
+        &self,
+        ctx: &client::Context,
+        s: impl Display + Send + Sync + 'static,
+    ) -> Result<Message>;
+
     async fn reply_error(
         &self,
         ctx: &client::Context,
@@ -88,6 +95,19 @@ impl MessageExt for Message {
             .context("Failed to send embed")
     }
 
+    async fn reply_success(
+        &self,
+        ctx: &client::Context,
+        s: impl Display + Send + Sync + 'static,
+    ) -> Result<Message> {
+
+        self.reply_embed(&ctx, |e| {
+            e.description(format!("{}", s));
+            e.color(0xb8bb26);
+        })
+        .await
+    }
+
     async fn reply_error(
         &self,
         ctx: &client::Context,
@@ -98,5 +118,26 @@ impl MessageExt for Message {
             e.color(0xe91714);
         })
         .await
+    }
+}
+
+pub trait DurationExt {
+    fn create_24h(&self) -> String;
+}
+
+impl DurationExt for Duration {
+    fn create_24h(&self) -> String {
+        let mins = (self.num_minutes() - 60 * self.num_hours()).to_string();
+        let min = if mins.len() == 1 {
+            format!("0{}", mins)
+        } else {
+            mins
+        };
+        let hour = if self.num_hours().to_string().len() == 1 {
+            format!("0{}", self.num_hours())
+        } else {
+            self.num_hours().to_string()
+        };
+        format!("{}:{}", hour, min)
     }
 }

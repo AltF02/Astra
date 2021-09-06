@@ -1,6 +1,6 @@
 use crate::bot::utils::Utils;
 use crate::constants::PLACEHOLDER;
-use crate::extensions::ClientContextExt;
+use crate::extensions::{ClientContextExt, DurationExt};
 use crate::models::launch::Launch;
 use crate::models::url::VidURL;
 use crate::services::database::guild::Query;
@@ -19,7 +19,7 @@ pub async fn dispatch_to_guilds(
 ) -> Result<(), Box<dyn Error>> {
     let guilds = db.get_guilds_queried(true, Query::Launches).await;
 
-    let remaining_str = Utils::convert_time_into_str(dt - chrono::offset::Utc::now());
+    let remaining_str = (dt - chrono::offset::Utc::now()).create_24h();
     for guild in guilds {
         let channel_id = guild.channel_id as u64;
         let channel = match Utils::fetch_channel_forced(ctx, channel_id).await {

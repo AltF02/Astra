@@ -1,5 +1,4 @@
 use crate::constants::APOD_URL;
-use chrono::Duration;
 use log::warn;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
@@ -48,34 +47,10 @@ impl Error for ApodError {
 pub struct Utils;
 
 impl Utils {
-    pub(crate) async fn reply<T: std::fmt::Display>(ctx: &Context, msg: &Message, content: T) {
-        if let Err(why) = msg.channel_id.say(&ctx, &content).await {
-            warn!(
-                "Failed to send message in #{} because\n{:?}",
-                msg.channel_id, why,
-            );
-        }
-    }
-
     pub fn check_msg(result: SerenityResult<Message>) {
         if let Err(why) = result {
             warn!("Error sending message: {:?}", why);
         }
-    }
-
-    pub fn convert_time_into_str(diff: Duration) -> String {
-        let mins = (diff.num_minutes() - 60 * diff.num_hours()).to_string();
-        let min = if mins.len() == 1 {
-            format!("0{}", mins)
-        } else {
-            mins
-        };
-        let hour = if diff.num_hours().to_string().len() == 1 {
-            format!("0{}", diff.num_hours())
-        } else {
-            diff.num_hours().to_string()
-        };
-        format!("{}:{}", hour, min)
     }
 
     pub async fn fetch_channel_forced(ctx: &Context, channel_id: u64) -> Option<Channel> {
