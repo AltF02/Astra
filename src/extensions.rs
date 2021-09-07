@@ -22,12 +22,14 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+use crate::models::launch::Launch;
 use crate::services::{Config, DB};
 
-use crate::bot::embeds::create_basic_embed;
+use crate::bot::embeds::{create_basic_embed, create_launch_embed};
 use anyhow::{Context, Result};
 use chrono::Duration;
 use serenity::builder::CreateEmbed;
+use serenity::model::channel::Channel;
 use serenity::model::prelude::Message;
 use serenity::{async_trait, client};
 use std::fmt::Display;
@@ -117,6 +119,33 @@ impl MessageExt for Message {
             e.color(0xe91714);
         })
         .await
+    }
+}
+
+#[async_trait]
+pub trait ChannelExt {
+    async fn send_launch(
+        &self,
+        ctx: &client::Context,
+        n: &Launch,
+        r: &String,
+    ) -> Result<Message>;
+}
+
+#[async_trait]
+impl ChannelExt for Channel {
+    async fn send_launch(
+        &self,
+        ctx: &client::Context,
+        n: &Launch,
+        r: &String,
+    ) -> Result<Message> {
+        let mut e = create_launch_embed(n, r).await;
+
+        self.id()
+            .send_message(ctx, move |m| m.set_embed(e))
+            .await
+            .context("Failed to send launch embed")
     }
 }
 

@@ -1,6 +1,7 @@
+use crate::bot::embeds::create_launch_embed;
 use crate::bot::utils::Utils;
 use crate::constants::PLACEHOLDER;
-use crate::extensions::{ClientContextExt, DurationExt};
+use crate::extensions::{ChannelExt, ClientContextExt, DurationExt};
 use crate::models::launch::Launch;
 use crate::models::url::VidURL;
 use crate::services::database::guild::Query;
@@ -29,78 +30,7 @@ pub async fn dispatch_to_guilds(
             }
         };
 
-        if channel
-            .id()
-            .send_message(&ctx.http, |m| {
-                m.embed(|e| {
-                    e.title(&next_launch.name)
-                        .description(format!(
-                            "> {}",
-                            if let Some(mission) = &next_launch.mission {
-                                &mission.description
-                            } else {
-                                "No description found :("
-                            }
-                        ))
-                        .fields(vec![
-                            (
-                                "Rocket",
-                                format!(
-                                    "➤ Name: **{}**\n➤ Total Launches: **{}**",
-                                    &next_launch.rocket.configuration.name,
-                                    &next_launch.rocket.configuration.total_launch_count
-                                ),
-                                false,
-                            ),
-                            (
-                                "Launch",
-                                format!(
-                                    "➤ Status: **{}**\n➤ Probability: **{}**",
-                                    &next_launch.status.description,
-                                    if next_launch.probability.is_none()
-                                        || next_launch.probability.unwrap() == -1
-                                    {
-                                        "Unknown".to_string()
-                                    } else {
-                                        format!("{}%", &next_launch.probability.unwrap())
-                                    }
-                                ),
-                                false,
-                            ),
-                        ])
-                        .image(
-                            &next_launch
-                                .rocket
-                                .configuration
-                                .image_url
-                                .as_ref()
-                                .unwrap_or(&PLACEHOLDER.to_string()),
-                        )
-                        .url(
-                            &next_launch
-                                .vid_urls
-                                .get(0)
-                                .unwrap_or(&VidURL {
-                                    priority: 0,
-                                    title: "".to_string(),
-                                    description: "".to_string(),
-                                    feature_image: Some("".to_string()),
-                                    url: "".to_string(),
-                                })
-                                .url,
-                        )
-                        .colour(0x00adf8)
-                        .footer(|f| f.text(&next_launch.id.to_string()))
-                        .author(|a| a.name(format!("Time Remaining: {} hours", remaining_str)))
-                        .timestamp(&dt)
-                })
-                .reactions(vec![Unicode("🔔".to_string())])
-            })
-            .await
-            .is_err()
-        {
-            continue;
-        }
+        channel.send_launch(ctx, &next_launch, &remaining_str).await;
     }
     Ok(())
 }

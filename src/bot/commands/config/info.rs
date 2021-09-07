@@ -1,6 +1,6 @@
 use crate::bot::commands::config::send_settings;
 use crate::extensions::{ClientContextExt, MessageExt};
-use crate::services::database::guild::DBGuild;
+use crate::services::database::guild::{DBGuild, GuildId};
 
 use serenity::framework::standard::macros::command;
 use serenity::framework::standard::CommandResult;
@@ -12,11 +12,10 @@ pub async fn config_info(ctx: &Context, msg: &Message) -> CommandResult {
     let db = ctx.get_db().await;
     let guild_id = msg.guild_id.unwrap().0 as i64;
     let guild = msg.guild(&ctx).await.unwrap();
-    let guild_db: Option<DBGuild> = sqlx::query_as!(
-        DBGuild,
+    let guild_db: Option<DBGuild> = sqlx::query_as(
         "SELECT * FROM astra.guilds WHERE guild_id = $1",
-        guild_id
     )
+    .bind(guild_id)
     .fetch_optional(&db.pool)
     .await?;
 

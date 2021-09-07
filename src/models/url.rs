@@ -1,6 +1,8 @@
+use std::default;
+
 use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Default)]
 pub struct VidURL {
     pub priority: i8,
     pub title: String,

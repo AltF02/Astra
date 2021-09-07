@@ -1,9 +1,15 @@
+use serenity::model::channel::Channel;
+use serenity::client;
+
 use crate::services::DB;
 use std::fmt::Formatter;
 
+#[derive(Debug, sqlx::FromRow, sqlx::Type)]
+pub struct GuildId(pub i64);
+
 #[derive(Debug, sqlx::FromRow)]
 pub struct DBGuild {
-    pub guild_id: i64,
+    pub guild_id: GuildId,
     pub channel_id: i64,
     pub active: bool,
     pub launches: bool,
@@ -15,6 +21,21 @@ pub enum Query {
     Launches,
     Events,
     Apod,
+}
+
+impl GuildId {
+    pub async fn fetch(&self, ctx: &client::Context) -> Option<Channel> {
+        return match ctx.cache.channel(self.0 as u64).await {
+            Some(channel) => Some(channel),
+            None => {
+                if let Ok(channel) = ctx.http.get_channel(self.0 as u64).await {
+                    Some(channel)
+                } else {
+                    return None;
+                }
+            }
+        };
+    }
 }
 
 impl std::fmt::Display for Query {
