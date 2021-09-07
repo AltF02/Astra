@@ -25,7 +25,7 @@ async fn main() {
         .init()
         .unwrap();
 
-    info!("Starting...");
+    info!("Starting Astra");
 
     let config = Config::new();
 

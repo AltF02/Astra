@@ -1,6 +1,3 @@
-
-
-
 use crate::extensions::{ChannelExt, ClientContextExt, DurationExt};
 use crate::models::launch::Launch;
 
@@ -22,14 +19,14 @@ pub async fn dispatch_to_guilds(
 
     let remaining_str = (dt - chrono::offset::Utc::now()).create_24h();
     for guild in guilds {
-        let channel = match guild.guild_id.fetch(&ctx).await {
+        let channel = match guild.guild_id.fetch(ctx).await {
             Some(channel) => channel,
             None => {
                 continue;
             }
         };
 
-        channel.send_launch(ctx, &next_launch, &remaining_str).await?;
+        channel.send_launch(ctx, next_launch, &remaining_str).await?;
     }
     Ok(())
 }
