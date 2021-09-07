@@ -100,8 +100,8 @@ impl MessageExt for Message {
         ctx: &client::Context,
         s: impl Display + Send + Sync + 'static,
     ) -> Result<Message> {
-        self.reply_embed(&ctx, |e| {
-            e.description(format!("{}", s));
+        self.reply_embed(ctx, |e| {
+            e.description(s);
             e.color(0xb8bb26);
         })
         .await
@@ -113,7 +113,7 @@ impl MessageExt for Message {
         s: impl Display + Send + Sync + 'static,
     ) -> Result<Message> {
         self.reply_embed(ctx, |e| {
-            e.description(format!("{}", s));
+            e.description(s);
             e.color(0xe91714);
         })
         .await
