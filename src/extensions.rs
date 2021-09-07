@@ -140,7 +140,7 @@ impl ChannelExt for Channel {
         n: &Launch,
         r: &String,
     ) -> Result<Message> {
-        let mut e = create_launch_embed(n, r).await;
+        let e = create_launch_embed(n, r).await;
 
         self.id()
             .send_message(ctx, move |m| m.set_embed(e))

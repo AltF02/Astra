@@ -1,13 +1,13 @@
-use crate::bot::embeds::create_launch_embed;
-use crate::bot::utils::Utils;
-use crate::constants::PLACEHOLDER;
+
+
+
 use crate::extensions::{ChannelExt, ClientContextExt, DurationExt};
 use crate::models::launch::Launch;
-use crate::models::url::VidURL;
+
 use crate::services::database::guild::Query;
 use crate::services::DB;
 use chrono::{DateTime, Utc};
-use serenity::model::prelude::ReactionType::Unicode;
+
 use serenity::prelude::Context;
 use std::error::Error;
 use std::sync::Arc;
@@ -22,15 +22,14 @@ pub async fn dispatch_to_guilds(
 
     let remaining_str = (dt - chrono::offset::Utc::now()).create_24h();
     for guild in guilds {
-        let channel_id = guild.channel_id as u64;
-        let channel = match Utils::fetch_channel_forced(ctx, channel_id).await {
+        let channel = match guild.guild_id.fetch(&ctx).await {
             Some(channel) => channel,
             None => {
                 continue;
             }
         };
 
-        channel.send_launch(ctx, &next_launch, &remaining_str).await;
+        channel.send_launch(ctx, &next_launch, &remaining_str).await?;
     }
     Ok(())
 }

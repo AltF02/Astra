@@ -1,6 +1,6 @@
 use chrono::Utc;
 use serenity::builder::CreateEmbed;
-use serenity::model::channel::EmbedFooter;
+
 
 use crate::constants::PLACEHOLDER;
 use crate::models::launch::Launch;
