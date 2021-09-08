@@ -74,19 +74,6 @@ impl Utils {
         }
     }
 
-    pub async fn fetch_channel_forced(ctx: &Context, channel_id: u64) -> Option<Channel> {
-        return match ctx.cache.channel(channel_id).await {
-            Some(channel) => Some(channel),
-            None => {
-                if let Ok(channel) = ctx.http.get_channel(channel_id).await {
-                    Some(channel)
-                } else {
-                    return None;
-                }
-            }
-        };
-    }
-
     pub async fn fetch_user_forced(ctx: &Context, user_id: u64) -> Option<User> {
         return match ctx.cache.user(user_id).await {
             Some(user) => Some(user),

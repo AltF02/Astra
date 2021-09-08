@@ -49,9 +49,7 @@ impl EventHandler for Handler {
             None => return,
         }
 
-        let log_channel = Utils::fetch_channel_forced(&ctx, config.log_channel_id)
-            .await
-            .unwrap();
+        let log_channel = config.log_channel_id.fetch(&ctx).await.unwrap();
 
         let owner_name = match Utils::fetch_user_forced(&ctx, guild.owner_id.0).await {
             Some(owner) => owner.name,

@@ -1,16 +1,14 @@
-use serenity::model::channel::Channel;
 use serenity::client;
+use serenity::model::channel::Channel;
 
+use crate::models::common::{ChannelId, GuildId};
 use crate::services::DB;
 use std::fmt::Formatter;
-
-#[derive(Debug, sqlx::FromRow, sqlx::Type)]
-pub struct GuildId(pub i64);
 
 #[derive(Debug, sqlx::FromRow)]
 pub struct DBGuild {
     pub guild_id: GuildId,
-    pub channel_id: i64,
+    pub channel_id: ChannelId,
     pub active: bool,
     pub launches: bool,
     pub apod: bool,
@@ -23,7 +21,7 @@ pub enum Query {
     Apod,
 }
 
-impl GuildId {
+impl ChannelId {
     pub async fn fetch(&self, ctx: &client::Context) -> Option<Channel> {
         return match ctx.cache.channel(self.0 as u64).await {
             Some(channel) => Some(channel),

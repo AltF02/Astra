@@ -32,7 +32,7 @@ pub async fn check_apod(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
     let guilds = db.get_guilds_queried(true, Query::Apod).await;
 
     for guild in guilds {
-        if let Some(channel) = Utils::fetch_channel_forced(&ctx, guild.channel_id as u64).await {
+        if let Some(channel) = guild.channel_id.fetch(&ctx).await {
             send_apod(channel.id(), &ctx, &apod).await;
         }
     }

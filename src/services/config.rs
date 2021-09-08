@@ -1,4 +1,5 @@
 use crate::constants::{DEFAULT_LOCATION, ENV_VAR};
+use crate::models::common::ChannelId;
 use log::info;
 use serde::{Deserialize, Serialize};
 use serenity::prelude::TypeMapKey;
@@ -14,7 +15,7 @@ pub struct Config {
     pub prefix: String,
     pub db_uri: String,
     pub nasa_key: String,
-    pub log_channel_id: u64,
+    pub log_channel_id: ChannelId,
     pub emotes: Emotes,
 }
 
@@ -43,7 +44,7 @@ impl Config {
                         prefix: prompt("Bot Prefix"),
                         db_uri: prompt("Database Uri"),
                         nasa_key: prompt("Nasa models key"),
-                        log_channel_id: 0,
+                        log_channel_id: ChannelId(0),
                         emotes: Emotes {
                             enabled: prompt("Discord enabled emote"),
                             disabled: prompt("Discord disabled emote"),
@@ -57,7 +58,7 @@ impl Config {
                         prefix: String::from(";"),
                         db_uri: String::new(),
                         nasa_key: String::new(),
-                        log_channel_id: 0,
+                        log_channel_id: ChannelId(0),
                         emotes: Emotes {
                             enabled: String::new(),
                             disabled: String::new(),

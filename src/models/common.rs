@@ -2,6 +2,12 @@ use crate::models::traits::ResObject;
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 
+#[derive(Debug, sqlx::FromRow, sqlx::Type, Clone, Copy, Deserialize, Serialize)]
+pub struct GuildId(pub i64);
+
+#[derive(Debug, sqlx::FromRow, sqlx::Type, Clone, Copy, Deserialize, Serialize)]
+pub struct ChannelId(pub i64);
+
 #[derive(Deserialize, Serialize, Debug)]
 pub struct SpaceStationCommon {
     pub id: i32,

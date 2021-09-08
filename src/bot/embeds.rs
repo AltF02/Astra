@@ -1,7 +1,6 @@
 use chrono::Utc;
 use serenity::builder::CreateEmbed;
 
-
 use crate::constants::PLACEHOLDER;
 use crate::models::launch::Launch;
 use crate::models::url::VidURL;

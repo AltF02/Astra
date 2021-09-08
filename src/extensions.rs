@@ -124,22 +124,12 @@ impl MessageExt for Message {
 
 #[async_trait]
 pub trait ChannelExt {
-    async fn send_launch(
-        &self,
-        ctx: &client::Context,
-        n: &Launch,
-        r: &String,
-    ) -> Result<Message>;
+    async fn send_launch(&self, ctx: &client::Context, n: &Launch, r: &String) -> Result<Message>;
 }
 
 #[async_trait]
 impl ChannelExt for Channel {
-    async fn send_launch(
-        &self,
-        ctx: &client::Context,
-        n: &Launch,
-        r: &String,
-    ) -> Result<Message> {
+    async fn send_launch(&self, ctx: &client::Context, n: &Launch, r: &String) -> Result<Message> {
         let e = create_launch_embed(n, r).await;
 
         self.id()
