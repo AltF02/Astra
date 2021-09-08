@@ -1,6 +1,8 @@
 use crate::models::traits::ResObject;
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
+use serenity::model::channel::Channel;
+use serenity::client;
 
 #[derive(Debug, sqlx::FromRow, sqlx::Type, Clone, Copy, Deserialize, Serialize)]
 pub struct GuildId(pub i64);
@@ -43,4 +45,19 @@ pub struct Status {
     pub name: String,
     pub abbrev: String,
     pub description: String,
+}
+
+impl ChannelId {
+    pub async fn fetch(&self, ctx: &client::Context) -> Option<Channel> {
+        return match ctx.cache.channel(self.0 as u64).await {
+            Some(channel) => Some(channel),
+            None => {
+                if let Ok(channel) = ctx.http.get_channel(self.0 as u64).await {
+                    Some(channel)
+                } else {
+                    return None;
+                }
+            }
+        };
+    }
 }
