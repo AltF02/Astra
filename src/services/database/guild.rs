@@ -1,6 +1,3 @@
-use serenity::client;
-use serenity::model::channel::Channel;
-
 use crate::models::common::{ChannelId, GuildId};
 use crate::services::DB;
 use std::fmt::Formatter;
