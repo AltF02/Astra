@@ -12,6 +12,7 @@ pub struct DBGuild {
     pub events: bool,
 }
 
+#[allow(dead_code)]
 pub enum Query {
     Launches,
     Events,

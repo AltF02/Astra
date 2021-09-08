@@ -1,8 +1,8 @@
 use crate::models::traits::ResObject;
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
-use serenity::model::channel::Channel;
 use serenity::client;
+use serenity::model::channel::Channel;
 
 #[derive(Debug, sqlx::FromRow, sqlx::Type, Clone, Copy, Deserialize, Serialize)]
 pub struct GuildId(pub i64);
