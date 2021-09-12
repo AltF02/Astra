@@ -11,7 +11,7 @@ impl Default for Mission {
     fn default() -> Self {
         Mission {
             id: 0,
-            name: "Unkown".to_string(),
+            name: "Unknown".to_string(),
             description: "No description found".to_string(),
         }
     }
