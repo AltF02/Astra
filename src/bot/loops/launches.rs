@@ -2,6 +2,7 @@ use crate::extensions::{channel::ChannelExt, context::ClientContextExt, duration
 use crate::models::launch::Launch;
 
 use crate::services::database::guild::Query;
+use crate::services::database::launch::DBLaunch;
 use crate::services::DB;
 use chrono::{DateTime, Utc};
 
@@ -37,7 +38,7 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
     let db = ctx.get_db().await;
 
     let next_launches = Launch::get_next_launch().await?;
-    for next_launch in &next_launches.results {
+    for next_launch in next_launches.results {
         let mut dispatched: bool = false;
         let launch_stamp = &next_launch.net;
         let now = chrono::offset::Utc::now();
@@ -47,13 +48,7 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
         match launch_db {
             Some(launch) => {
                 if next_launch.net != launch.net {
-                    sqlx::query!(
-                        "UPDATE astra.launches SET net = $1 WHERE launch_id = $2",
-                        next_launch.net,
-                        next_launch.id
-                    )
-                    .execute(&db.pool)
-                    .await?;
+                    db.set_net(&next_launch).await?;
                 }
                 return Ok(());
             }
@@ -61,39 +56,16 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
                 let dt = next_launch.net;
                 if 24 >= (dt - now).num_hours() && launch_stamp > &now && next_launch.status.id == 1
                 {
-                    dispatch_to_guilds(&ctx, next_launch, &db, dt).await?;
+                    dispatch_to_guilds(&ctx, &next_launch, &db, dt).await?;
                     dispatched = true;
                 }
             }
         }
 
-        let vid_url: Option<&String> = match next_launch.vid_urls.get(0) {
-            Some(vid_url) => Some(&vid_url.url),
-            None => None,
-        };
-        let desc = next_launch
-            .mission
-            .as_ref()
-            .map(|mission| &mission.description);
+        let mut dblaunch = DBLaunch::from(next_launch);
+        dblaunch.dispatched = dispatched;
 
-        sqlx::query!(
-            "INSERT INTO astra.launches (launch_id, name, net, vid_url, \
-                image_url, dispatched, status, description) \
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8) \
-                    ON CONFLICT (launch_id) DO \
-                        UPDATE SET net = $3, vid_url = $4, dispatched = $6, \
-                        status = $7, description = $8;",
-            next_launch.id,
-            next_launch.name,
-            next_launch.net,
-            vid_url,
-            next_launch.rocket.configuration.image_url,
-            dispatched,
-            next_launch.status.id as i32,
-            desc
-        )
-        .execute(&db.pool)
-        .await?;
+        db.set_launch(dblaunch).await?;
     }
 
     Ok(())

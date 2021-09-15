@@ -1,27 +1,25 @@
-use crate::bot::utils::{Apod, Utils};
+use crate::bot::utils::Apod;
 use crate::extensions::context::ClientContextExt;
+use crate::extensions::ChannelExt;
 use crate::services::database::guild::Query;
 
-use serenity::model::id::ChannelId;
+use anyhow::Result;
+
+use serenity::model::channel::Channel;
 use serenity::prelude::Context;
 use std::error::Error;
 use std::sync::Arc;
 
-pub async fn send_apod(channel: ChannelId, ctx: &Context, apod: &Apod) {
-    Utils::check_msg(
-        channel
-            .send_message(&ctx.http, |m| {
-                m.embed(|e| {
-                    e.title(&apod.title)
-                        .image(&apod.hdurl)
-                        .footer(|f| f.text(&apod.date))
-                        .description(&apod.explanation)
-                        .colour(0x5694c7)
-                });
-                m
-            })
-            .await,
-    );
+pub async fn send_apod(channel: Channel, ctx: &Context, apod: &Apod) -> Result<()> {
+    channel
+        .send_embed(ctx, |e| {
+            e.title(&apod.title);
+            e.image(&apod.hdurl);
+            e.description(&apod.explanation);
+            e.color(0x5694c7);
+        })
+        .await?;
+    Ok(())
 }
 
 pub async fn check_apod(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
@@ -33,7 +31,7 @@ pub async fn check_apod(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
 
     for guild in guilds {
         if let Some(channel) = guild.channel_id.fetch(&ctx).await {
-            send_apod(channel.id(), &ctx, &apod).await;
+            send_apod(channel, &ctx, &apod).await?;
         }
     }
 
