@@ -7,23 +7,12 @@ mod extensions;
 mod models;
 mod services;
 
-use crate::services::Config;
-use log::{info, warn, LevelFilter};
-use simple_logger::SimpleLogger;
+use crate::services::{Config, Logger};
+use log::{info, warn};
 
 #[tokio::main]
 async fn main() {
-    #[cfg(debug_assertions)]
-    SimpleLogger::new()
-        .with_level(LevelFilter::Info)
-        .init()
-        .unwrap();
-
-    #[cfg(not(debug_assertions))]
-    SimpleLogger::new()
-        .with_level(LevelFilter::Error)
-        .init()
-        .unwrap();
+    fern::Dispatch::setup().expect("Unable to setup logger");
 
     info!("Starting Astra");
 
