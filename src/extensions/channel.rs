@@ -2,7 +2,8 @@ use crate::bot::embeds::create_launch_embed;
 use crate::models::launch::Launch;
 use anyhow::{Context, Result};
 use serenity::{
-    async_trait, client,
+    async_trait,
+    client,
     model::prelude::{Channel, Message},
 };
 

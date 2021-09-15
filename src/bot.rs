@@ -2,14 +2,22 @@ use crate::services::{config::Config, database::DB};
 
 use events::Handler;
 use log::warn;
-use serenity::framework::standard::{
-    help_commands, macros::help, Args, CommandGroup, CommandResult, HelpOptions,
+use serenity::{
+    framework::standard::{
+        help_commands,
+        macros::help,
+        Args,
+        CommandGroup,
+        CommandResult,
+        HelpOptions,
+        StandardFramework,
+    },
+    model::prelude::{Message, UserId},
+    prelude::*,
+    utils::Colour,
+
+    Client,
 };
-use serenity::model::channel::Message;
-use serenity::model::prelude::UserId;
-use serenity::prelude::*;
-use serenity::utils::Colour;
-use serenity::{framework::standard::StandardFramework, Client};
 use std::collections::HashSet;
 use std::sync::Arc;
 
