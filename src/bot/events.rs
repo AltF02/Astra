@@ -1,6 +1,6 @@
 use crate::bot::loops::launches_loop;
 use crate::bot::utils::Utils;
-use crate::extensions::ClientContextExt;
+use crate::extensions::context::ClientContextExt;
 
 use log::info;
 use log::*;

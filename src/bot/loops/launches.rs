@@ -1,4 +1,4 @@
-use crate::extensions::{ChannelExt, ClientContextExt, DurationExt};
+use crate::extensions::{channel::ChannelExt, context::ClientContextExt, duration::DurationExt};
 use crate::models::launch::Launch;
 
 use crate::services::database::guild::Query;

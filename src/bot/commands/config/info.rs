@@ -1,5 +1,5 @@
 use crate::bot::commands::config::send_settings;
-use crate::extensions::{ClientContextExt, MessageExt};
+use crate::extensions::{context::ClientContextExt, message::MessageExt};
 use crate::services::database::guild::DBGuild;
 
 use serenity::framework::standard::macros::command;

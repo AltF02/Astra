@@ -1,5 +1,5 @@
 use crate::bot::utils::{Apod, Utils};
-use crate::extensions::ClientContextExt;
+use crate::extensions::context::ClientContextExt;
 use crate::services::database::guild::Query;
 
 use serenity::model::id::ChannelId;

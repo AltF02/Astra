@@ -1,5 +1,5 @@
 use crate::bot::utils::Utils;
-use crate::extensions::ClientContextExt;
+use crate::extensions::context::ClientContextExt;
 
 use serenity::framework::standard::macros::command;
 use serenity::framework::standard::{Args, CommandResult};

@@ -1,4 +1,4 @@
-use crate::extensions::MessageExt;
+use crate::extensions::message::MessageExt;
 use serenity::framework::standard::macros::command;
 use serenity::framework::standard::CommandResult;
 use serenity::model::prelude::Message;

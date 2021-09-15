@@ -10,7 +10,7 @@ use self::channel::CHANNEL_COMMAND;
 use self::info::CONFIG_INFO_COMMAND;
 use self::set::SET_COMMAND;
 
-use crate::extensions::ClientContextExt;
+use crate::extensions::context::ClientContextExt;
 use serenity::model::prelude::*;
 use serenity::{framework::standard::macros::group, model::channel::Message, prelude::*};
 

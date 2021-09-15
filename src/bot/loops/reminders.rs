@@ -1,6 +1,6 @@
 use crate::bot::utils::Utils;
 use crate::constants::PLACEHOLDER;
-use crate::extensions::ClientContextExt;
+use crate::extensions::context::ClientContextExt;
 
 use serenity::prelude::Context;
 use std::error::Error;

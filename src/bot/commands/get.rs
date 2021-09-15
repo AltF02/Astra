@@ -9,7 +9,7 @@ use serenity::{
 };
 
 use crate::bot::utils::Utils;
-use crate::extensions::ClientContextExt;
+use crate::extensions::context::ClientContextExt;
 
 use serenity::model::prelude::ReactionType::Unicode;
 
