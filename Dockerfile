@@ -1,4 +1,4 @@
-FROM rust:1.54-buster
+FROM rust:latest
 
 WORKDIR /usr/src/astra
 COPY . .

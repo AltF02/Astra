@@ -1,11 +1,8 @@
-use crate::constants::{DEFAULT_LOCATION, ENV_VAR};
 use crate::models::common::ChannelId;
-use log::info;
+use dotenv::dotenv;
 use serde::{Deserialize, Serialize};
 use serenity::prelude::TypeMapKey;
 use std::env;
-use std::fs::File;
-use std::io::prelude::*;
 use std::sync::Arc;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -32,80 +29,39 @@ pub struct Emotes {
 
 impl Config {
     pub fn new() -> Config {
-        let location = env::var(ENV_VAR).unwrap_or_else(|_| DEFAULT_LOCATION.to_string());
         match Config::retrieve() {
             Some(conf) => conf,
             None => {
-                let conf;
-                if prompt("Do you want to configure the config.yml now? (y/n)") == "y" {
-                    conf = Config {
-                        token: prompt("Discord Bot Token"),
-                        application_id: 0,
-                        prefix: prompt("Bot Prefix"),
-                        db_uri: prompt("Database Uri"),
-                        nasa_key: prompt("Nasa models key"),
-                        log_channel_id: ChannelId(0),
-                        emotes: Emotes {
-                            enabled: prompt("Discord enabled emote"),
-                            disabled: prompt("Discord disabled emote"),
-                            bell: prompt("Discord Bell emote"),
-                        },
-                    }
-                } else {
-                    conf = Config {
-                        token: String::new(),
-                        application_id: 0,
-                        prefix: String::from(";"),
-                        db_uri: String::new(),
-                        nasa_key: String::new(),
-                        log_channel_id: ChannelId(0),
-                        emotes: Emotes {
-                            enabled: String::new(),
-                            disabled: String::new(),
-                            bell: String::from("🔔"),
-                        },
-                    };
-                }
-                conf.save();
-                info!("Created a new config.yml to {}", &location);
-                conf
+                panic!("Please create a .env file")
             }
-        }
-    }
-
-    pub fn save(&self) {
-        let serialized = serde_yaml::to_string(&self).expect("Failed to serialize");
-        let location = env::var(ENV_VAR).unwrap_or_else(|_| DEFAULT_LOCATION.to_string());
-        match File::create(&location) {
-            Ok(mut file) => file
-                .write_all(serialized.as_bytes())
-                .expect("Failed to write"),
-            Err(e) => panic!("Failed to save config at {}\n{}", &location, e),
         }
     }
 
     fn retrieve() -> Option<Config> {
-        let location = env::var(ENV_VAR).unwrap_or_else(|_| DEFAULT_LOCATION.to_string());
-        match File::open(&location) {
-            Ok(mut file) => {
-                let mut contents = String::new();
-                if file.read_to_string(&mut contents).is_err() {
-                    return None;
-                };
-
-                match serde_yaml::from_str(&contents) {
-                    Ok(des) => Some(des),
-                    Err(_) => None,
-                }
-            }
-            Err(_) => None,
-        }
+        return if dotenv().ok().is_some() {
+            Some(Config {
+                token: env::var("TOKEN").expect("Missing TOKEN"),
+                application_id: env::var("APPLICATION_ID")
+                    .expect("Missing APPLICATION_ID")
+                    .parse::<u64>()
+                    .unwrap(),
+                prefix: env::var("PREFIX").expect("Missing PREFIX"),
+                db_uri: env::var("DB").expect("Missing DB"),
+                nasa_key: env::var("NASA_KEY").expect("Missing NASA_KEY"),
+                log_channel_id: ChannelId(
+                    env::var("LOG_CHANNEL_ID")
+                        .expect("Missing LOG_CHANNEL_ID")
+                        .parse::<i64>()
+                        .unwrap(),
+                ),
+                emotes: Emotes {
+                    enabled: env::var("EMOTES_ENABLED").expect("Missing EMOTES_ENABLED"),
+                    disabled: env::var("EMOTES_DISABLED").expect("Missing EMOTES_DISABLED"),
+                    bell: env::var("EMOTES_BELL").expect("Missing EMOTES_BELL"),
+                },
+            })
+        } else {
+            None
+        };
     }
-}
-
-fn prompt(message: &str) -> String {
-    println!("{} ->", message);
-    let value = &mut String::new();
-    std::io::stdin().read_line(value).unwrap();
-    return value.trim().to_string();
 }

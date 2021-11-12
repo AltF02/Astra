@@ -1,0 +1,21 @@
+version: "3"
+services:
+  astra:
+    restart: always
+    build: .
+    networks:
+      - astra
+    env_file:
+      - .env
+  astra-db:
+    image: postgres:14.1-alpine3.14
+    volumes:
+      - data:/var/lib/postgresql/data
+    networks:
+      - astra
+
+volumes:
+  data:
+
+networks:
+  astra:

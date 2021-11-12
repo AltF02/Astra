@@ -5,9 +5,11 @@ use serenity::client;
 use serenity::model::channel::Channel;
 
 #[derive(Debug, sqlx::FromRow, sqlx::Type, Clone, Copy, Deserialize, Serialize)]
+#[sqlx(transparent)]
 pub struct GuildId(pub i64);
 
 #[derive(Debug, sqlx::FromRow, sqlx::Type, Clone, Copy, Deserialize, Serialize)]
+#[sqlx(transparent)]
 pub struct ChannelId(pub i64);
 
 #[derive(Deserialize, Serialize, Debug)]
