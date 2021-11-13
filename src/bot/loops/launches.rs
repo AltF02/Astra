@@ -6,6 +6,9 @@ use crate::services::database::launch::DBLaunch;
 use crate::services::DB;
 use chrono::{DateTime, Utc};
 
+use log::warn;
+
+use serenity::model::channel::ReactionType::Unicode;
 use serenity::prelude::Context;
 use std::error::Error;
 use std::sync::Arc;
@@ -27,9 +30,11 @@ pub async fn dispatch_to_guilds(
             }
         };
 
-        channel
-            .send_launch(ctx, next_launch, &remaining_str)
-            .await?;
+        if let Ok(m) = channel.send_launch(ctx, next_launch, &remaining_str).await {
+            m.react(&ctx, Unicode("🔔".to_string()))
+        } else {
+            warn!("Failed to send Launch to {}", channel.id())
+        }
     }
     Ok(())
 }
