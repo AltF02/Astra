@@ -1,0 +1,24 @@
+FROM rust:latest
+
+WORKDIR /usr/src/astra
+COPY . .
+
+RUN sed 's/^deb/deb-src/' /etc/apt/sources.list > /etc/apt/sources.list.d/deb-src.list \
+    && dpkg --add-architecture armhf \
+    && apt-get update \
+    && apt-get install -y \
+        --no-install-recommends \
+        libssl-dev:armhf \
+        libc6-dev:armhf \
+        libpq5:armhf \
+        gcc-arm-linux-gnueabihf \
+
+    && echo '[target.armv7-unknown-linux-gnueabihf]' >> "${CARGO_HOME}/config" \
+    && echo 'linker = "arm-linux-gnueabihf-gcc"' >> "${CARGO_HOME}/config" \
+    && echo 'rustflags = ["-L/usr/lib/arm-linux-gnueabihf"]' >> "${CARGO_HOME}/config"
+
+RUN rustup target add armv7-unknown-linux-gnueabihf
+
+RUN cargo install --path . --target=armv7-unknown-linux-gnueabihf
+
+CMD ["astra"]
