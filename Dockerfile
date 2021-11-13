@@ -1,4 +1,4 @@
-FROM rust:latest
+FROM --platform=$BUILDPLATFORM rust:1.56-slim-buster
 
 WORKDIR /usr/src/astra
 COPY . .
