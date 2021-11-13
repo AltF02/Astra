@@ -31,9 +31,9 @@ pub async fn dispatch_to_guilds(
         };
 
         if let Ok(m) = channel.send_launch(ctx, next_launch, &remaining_str).await {
-            m.react(&ctx, Unicode("🔔".to_string()))
+            m.react(&ctx, Unicode("🔔".to_string())).await?;
         } else {
-            warn!("Failed to send Launch to {}", channel.id())
+            warn!("Failed to send Launch to {}", channel.id());
         }
     }
     Ok(())

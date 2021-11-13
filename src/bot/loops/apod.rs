@@ -20,7 +20,7 @@ pub async fn send_apod(channel: Channel, ctx: &Context, apod: &Apod) -> Result<(
             e.color(0x5694c7);
         })
         .await
-        .err()
+        .is_err()
     {
         warn!("Failed to send APOD to {}", channel.id())
     }
