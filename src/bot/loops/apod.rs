@@ -17,6 +17,12 @@ pub async fn send_apod(channel: Channel, ctx: &Context, apod: &Apod) -> Result<(
             e.title(&apod.title);
             e.image(&apod.hdurl);
             e.description(&apod.explanation);
+            e.footer(|f| {
+                f.text(format!(
+                    "Copyright © {}. All Rights Reserved.",
+                    &apod.copyright
+                ))
+            });
             e.color(0x5694c7);
         })
         .await
