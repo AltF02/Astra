@@ -18,16 +18,20 @@ impl Logger for fern::Dispatch {
         let logger = fern::Dispatch::new()
             .format(move |out, message, record| {
                 out.finish(format_args!(
-                    "[{}]{} {}",
+                    "[{}][{}]{} {}",
                     colors.color(record.level()),
+                    record.target(),
                     chrono::Utc::now().format("[%Y-%m-%d %H:%M:%S]"),
                     message
                 ))
             })
             .level(level)
-            .chain(std::io::stdout());
+            .level_for("tracing", LevelFilter::Warn);
 
-        logger.apply()?;
+        #[cfg(not(debug_assertions))]
+        logger.level_for("sqlx", LevelFilter::Warn);
+
+        logger.chain(std::io::stdout()).apply()?;
 
         Ok(())
     }

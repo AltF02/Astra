@@ -78,6 +78,7 @@ impl DB {
         )
         .bind(launch.launch_id)
         .bind(launch.name)
+        .bind(launch.net)
         .bind(launch.vid_url)
         .bind(launch.image_url)
         .bind(launch.dispatched)

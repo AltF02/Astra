@@ -1,12 +1,12 @@
 # Astra 
-![Build](https://github.com/DankDumpster/mouse-rs/workflows/Rust/badge.svg?style=flat-square)
+![Build](https://github.com/AltF02/Astra/workflows/Rust/badge.svg?style=flat-square)
 [![Discord Bots](https://top.gg/api/widget/status/675542011457044512.svg)](https://top.gg/bot/675542011457044512)
 
 Astra is a discord bot written in rust to keep you reminded on rocket launches and more! An always online bot is available **[here](https://discord.com/oauth2/authorize?client_id=675542011457044512&permissions=322624&scope=bot%20applications.commands)**
-## How to start
+## How to start (THE CONFIG SYSTEM IS BEING REWRITTEN AND THIS CURRENTLY DOESN'T WORK!)
 Clone the repo with 
 ```shell script
-git clone https://github.com/DankDumpster/astra.git
+git clone https://github.com/AltF02/astra.git
 ```
 
 Now we need to setup sqlx and we do that by doing
