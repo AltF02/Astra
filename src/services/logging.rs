@@ -28,9 +28,6 @@ impl Logger for fern::Dispatch {
             .level(level)
             .level_for("tracing", LevelFilter::Warn);
 
-        #[cfg(not(debug_assertions))]
-        logger.level_for("sqlx", LevelFilter::Warn);
-
         logger.chain(std::io::stdout()).apply()?;
 
         Ok(())
