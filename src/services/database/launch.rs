@@ -40,7 +40,7 @@ impl DB {
         .bind(dispatched)
         .fetch_optional(&self.pool)
         .await
-        .unwrap()
+        .unwrap_or(None)
     }
 
     pub async fn get_launches(&self) -> Vec<DBLaunch> {

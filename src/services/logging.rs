@@ -26,7 +26,8 @@ impl Logger for fern::Dispatch {
                 ))
             })
             .level(level)
-            .level_for("tracing", LevelFilter::Warn);
+            .level_for("tracing", LevelFilter::Warn)
+            .level_for("reqwest", LevelFilter::Debug);
 
         logger.chain(std::io::stdout()).apply()?;
 

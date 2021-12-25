@@ -1,4 +1,8 @@
 // The spacedevs api URL
+#[cfg(debug_assertions)]
+pub const BASE_URL: &str = "https://lldev.thespacedevs.com/2.2.0";
+
+#[cfg(not(debug_assertions))]
 pub const BASE_URL: &str = "https://ll.thespacedevs.com/2.2.0";
 
 pub const APOD_URL: &str = "https://api.nasa.gov/planetary/apod?api_key=";

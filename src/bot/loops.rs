@@ -10,6 +10,7 @@ use std::sync::Arc;
 pub mod apod;
 pub mod events;
 pub mod launches;
+pub mod news;
 pub mod reminders;
 
 pub async fn launches_loop(ctx: Arc<Context>) {
