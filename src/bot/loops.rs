@@ -45,7 +45,6 @@ pub async fn launches_loop(ctx: Arc<Context>) {
             let ctx1 = Arc::clone(&reminder_ctx);
             tokio::spawn(async move {
                 if let Err(e) = reminder_check(Arc::clone(&ctx1)).await {
-                    error!("reminder_check :: {}", e);
                     eprintln!("An error occurred while running reminder_check() >>> {}", e);
                 }
             });

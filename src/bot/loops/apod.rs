@@ -25,7 +25,9 @@ pub async fn check_apod(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
 
     for guild in guilds {
         if let Some(channel) = guild.channel_id.fetch(&ctx).await {
-            channel.send_apod(&ctx, &apod).await?;
+            if channel.send_apod(&ctx, &apod).await.is_err() {
+                continue;
+            }
         }
     }
 
