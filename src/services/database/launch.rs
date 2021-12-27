@@ -33,14 +33,12 @@ impl From<Launch> for DBLaunch {
 
 impl DB {
     pub async fn get_launch(&self, id: &LaunchID, dispatched: bool) -> Option<DBLaunch> {
-        sqlx::query_as(
-            "SELECT dispatched, net FROM astra.launches WHERE launch_id = $1 AND dispatched = $2",
-        )
-        .bind(id)
-        .bind(dispatched)
-        .fetch_optional(&self.pool)
-        .await
-        .unwrap_or(None)
+        sqlx::query_as("SELECT * FROM astra.launches WHERE launch_id = $1 AND dispatched = $2")
+            .bind(id)
+            .bind(dispatched)
+            .fetch_optional(&self.pool)
+            .await
+            .unwrap()
     }
 
     pub async fn get_launches(&self) -> Vec<DBLaunch> {
