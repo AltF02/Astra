@@ -1,7 +1,7 @@
 use crate::bot::embeds::{create_apod_embed, create_basic_embed, create_launch_embed};
 use crate::models::apod::Apod;
 use crate::models::launch::Launch;
-use anyhow::{Context, Result};
+use serenity::Result;
 use serenity::{
     async_trait,
     builder::CreateEmbed,
@@ -33,24 +33,17 @@ impl ChannelExt for Channel {
                 m.set_embed(e)
             })
             .await
-            .context("Failed to send embed")
     }
 
     async fn send_launch(&self, ctx: &client::Context, n: &Launch, r: &String) -> Result<Message> {
         let e = create_launch_embed(n, r);
 
-        self.id()
-            .send_message(ctx, move |m| m.set_embed(e))
-            .await
-            .context("Failed to send launch embed")
+        self.id().send_message(ctx, move |m| m.set_embed(e)).await
     }
 
     async fn send_apod(&self, ctx: &client::Context, n: &Apod) -> Result<Message> {
         let e = create_apod_embed(n);
 
-        self.id()
-            .send_message(ctx, move |m| m.set_embed(e))
-            .await
-            .context("Failed to send apod embed")
+        self.id().send_message(ctx, move |m| m.set_embed(e)).await
     }
 }
