@@ -44,7 +44,7 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
 
     let next_launches = Launch::get_next_launch().await?;
     for next_launch in next_launches.results {
-        let mut dispatched: bool = false;
+        let mut dispatched = false;
         let launch_stamp = &next_launch.net;
         let now = chrono::offset::Utc::now();
 
