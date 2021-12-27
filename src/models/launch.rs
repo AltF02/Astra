@@ -27,6 +27,7 @@ pub struct Launch {
     #[serde(alias = "vidURLs")]
     pub vid_urls: Vec<VidURL>,
 }
+
 impl Launch {
     pub async fn get_next_launch<'a>() -> Result<ApiResult<Launch>, Box<dyn Error>> {
         let res = reqwest::get(&format!(

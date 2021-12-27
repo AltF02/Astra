@@ -15,7 +15,6 @@ use serenity::{
     model::prelude::{Message, UserId},
     prelude::*,
     utils::Colour,
-
     Client,
 };
 use std::collections::HashSet;

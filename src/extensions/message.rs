@@ -28,7 +28,7 @@ impl MessageExt for Message {
     where
         F: FnOnce(&mut CreateEmbed) + Send + Sync,
     {
-        let mut e = create_basic_embed().await;
+        let mut e = create_basic_embed();
         build(&mut e);
 
         self.channel_id

@@ -1,3 +1,4 @@
+pub mod apod;
 pub mod common;
 pub mod crew;
 pub mod event;

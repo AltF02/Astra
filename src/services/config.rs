@@ -38,7 +38,7 @@ impl Config {
     }
 
     fn retrieve() -> Option<Config> {
-        return if dotenv().ok().is_some() {
+        if dotenv().ok().is_some() {
             Some(Config {
                 token: env::var("TOKEN").expect("Missing TOKEN"),
                 application_id: env::var("APPLICATION_ID")
@@ -62,6 +62,6 @@ impl Config {
             })
         } else {
             None
-        };
+        }
     }
 }
