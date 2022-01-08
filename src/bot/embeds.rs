@@ -57,7 +57,7 @@ pub fn create_apod_embed(a: &Apod) -> CreateEmbed {
 
     e.title(&a.title);
     e.image(&a.hdurl);
-    e.description(&a.explanation);
+    e.description(format!("> {}", &a.explanation));
     e.footer(|f| {
         f.text(format!(
             "Copyright © {}. All Rights Reserved.",
