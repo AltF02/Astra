@@ -44,7 +44,10 @@ impl From<&Apod> for DBApod {
 
 impl DB {
     pub async fn get_most_recent_apod(&self) -> DBApod {
-        unimplemented!()
+        sqlx::query_as("SELECT * FROM astra.apod ORDER BY publish_date DESC LIMIT 1")
+            .fetch_one(&self.pool)
+            .await
+            .unwrap()
     }
 
     pub async fn get_apod_dispatched(&self, a: &mut DBApod) {
