@@ -9,6 +9,11 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
       
       - name: Checkout
         uses: actions/checkout@v2
@@ -33,4 +38,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/astra:latest
+          tags: ghcr.io/${{ env.OWNER_LC }}/astra:${{ env.GITHUB_SHA }}
