@@ -9,7 +9,6 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ::set-env name=IMAGE_TAG::${GITHUB_REF:10}
       
       - name: Checkout
         uses: actions/checkout@v2
@@ -34,4 +33,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/<image-name>:${{ env.IMAGE_TAG }}
+          tags: ghcr.io/${{ github.repository_owner }}/astra:${{ env.GITHUB_SHA }}
