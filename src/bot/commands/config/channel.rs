@@ -27,11 +27,7 @@ pub async fn channel(ctx: &Context, msg: &Message, mut args: Args) -> CommandRes
     let guild_id = msg.guild_id.unwrap().0 as i64;
     let channel_id = channel.id().0 as i64;
 
-    sqlx::query!(
-    "INSERT INTO astra.guilds (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2, active = true",
-        guild_id, channel_id)
-        .execute(&db.pool)
-        .await?;
+    db.set_guild_channel(channel_id, guild_id).await?;
 
     msg.reply(ctx, format!("Set the channel to {}", channel.mention()))
         .await?;

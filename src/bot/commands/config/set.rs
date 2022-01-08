@@ -1,5 +1,6 @@
 use crate::extensions::context::ClientContextExt;
 
+use crate::services::database::guild::Query;
 use serenity::framework::standard::macros::command;
 use serenity::framework::standard::{Args, CommandResult};
 use serenity::model::prelude::Message;
@@ -23,37 +24,15 @@ pub async fn set(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult 
 
     let guild_id = msg.guild_id.unwrap().0 as i64;
 
-    match option.to_lowercase().as_str() {
-        "apod" => {
-            sqlx::query!(
-                "UPDATE astra.guilds SET apod = NOT apod WHERE guild_id = $1",
-                guild_id
-            )
-            .execute(&db.pool)
+    let query = Query::from_str(option.to_lowercase().as_str());
+
+    if query.is_none() {
+        msg.reply(&ctx.http, "Please provide an valid option")
             .await?;
-        }
-        "launches" => {
-            sqlx::query!(
-                "UPDATE astra.guilds SET launches = NOT launches WHERE guild_id = $1",
-                guild_id
-            )
-            .execute(&db.pool)
-            .await?;
-        }
-        "events" => {
-            sqlx::query!(
-                "UPDATE astra.guilds SET events = NOT events WHERE guild_id = $1",
-                guild_id
-            )
-            .execute(&db.pool)
-            .await?;
-        }
-        &_ => {
-            msg.reply(&ctx.http, "Please provide an valid option")
-                .await?;
-            return Ok(());
-        }
+        return Ok(());
     }
+
+    db.toggle_guild_setting(guild_id, query.unwrap()).await?;
 
     msg.reply(&ctx.http, format!("Updated {}", option)).await?;
 
