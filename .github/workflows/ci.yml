@@ -38,4 +38,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/astra:${{ env.GITHUB_SHA }}
+          tags: ghcr.io/${{ env.OWNER_LC }}/astra:${{ github.sha }}
