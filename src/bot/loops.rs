@@ -67,7 +67,7 @@ pub async fn launches_loop(ctx: Arc<Context>) {
 
             debug!("Launches loop finished");
 
-            tokio::time::sleep(Duration::days(1).to_std().unwrap()).await;
+            tokio::time::sleep(std::time::Duration::from_secs(7200)).await;
         }
     });
 }
