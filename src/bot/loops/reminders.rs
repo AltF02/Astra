@@ -1,7 +1,8 @@
 use crate::bot::utils::Utils;
-use crate::constants::PLACEHOLDER;
 use crate::extensions::context::ClientContextExt;
 
+use crate::extensions::user::UserExt;
+use crate::services::database::reminders::Reminder;
 use serenity::prelude::Context;
 use std::error::Error;
 use std::sync::Arc;
@@ -25,50 +26,16 @@ pub async fn reminder_check(ctx: Arc<Context>) -> Result<(), Box<dyn Error>> {
             _ => continue,
         };
 
-        let users = sqlx::query!(
-            "SELECT user_id FROM astra.reminders WHERE launch_id = $1",
-            next_launch.launch_id
-        )
-        .fetch_all(&db.pool)
-        .await?;
-
-        let mut stream = "I'm unaware of any stream :(".to_string();
-        if let Some(vid_url) = &next_launch.vid_url {
-            stream = format!("[Stream]({})", &vid_url)
-        }
+        let r = Reminder::from(&next_launch.launch_id);
+        let users = db.fetch_reminder_users(r).await;
 
         for user in users {
-            let user_id = user.user_id as u64;
-            let user = match Utils::fetch_user_forced(&ctx, user_id).await {
+            let user = match Utils::fetch_user_forced(&ctx, user.0 as u64).await {
                 Some(user) => user,
                 None => continue,
             };
-            if user
-                .dm(&ctx.http, |m| {
-                    m.embed(|e| {
-                        e.author(|a| a.name(&next_launch.name))
-                            .thumbnail(
-                                &next_launch
-                                    .image_url
-                                    .as_ref()
-                                    .unwrap_or(&PLACEHOLDER.to_string()),
-                            )
-                            .title("Launch Reminder")
-                            .description(format!("{}\n\n{}", msg, stream))
-                            .colour(0xcc0099)
-                            // .timestamp(&dt)
-                            .footer(|f| {
-                                f.text(format!(
-                                    "This reminder is for launch ID: {}",
-                                    &next_launch.launch_id
-                                ))
-                                .icon_url(user.face())
-                            })
-                    })
-                })
-                .await
-                .is_err()
-            {
+            let r = user.send_reminder(&ctx, &user, msg, next_launch).await;
+            if r.is_err() {
                 continue;
             }
         }

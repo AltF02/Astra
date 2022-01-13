@@ -15,8 +15,7 @@ pub async fn daily(ctx: &Context, msg: &Message) -> CommandResult {
         .await
         .expect("Unable to fetch message channel?");
 
-    let dbapod = db.get_most_recent_apod().await;
-    let apod = Apod::from(dbapod);
+    let apod = Apod::from(db.get_most_recent_apod().await);
     channel.send_apod(ctx, &apod).await?;
 
     Ok(())
