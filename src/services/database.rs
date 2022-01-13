@@ -1,6 +1,7 @@
 pub mod apod;
 pub mod guild;
 pub mod launch;
+pub mod reminders;
 
 use anyhow::*;
 use serenity::prelude::TypeMapKey;

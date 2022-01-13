@@ -63,7 +63,7 @@ impl EventHandler for Handler {
                     m.embed(|e| {
                         e.title("Joined Guild")
                             .description(format!(
-                                "➤ Member count: **{}**\n ➤ Owner: **{}**",
+                                "➤ Member count: **{}**\n➤ Owner: **{}**",
                                 &guild.member_count, owner_name
                             ))
                             .footer(|f| {
