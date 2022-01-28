@@ -173,16 +173,12 @@ impl EventHandler for Handler {
     async fn ready(&self, ctx: Context, ready: Ready) {
         let perms = Permissions::from_bits(0).unwrap();
         let user = &ready.user;
-        // ctx.set_presence(
-        //     Some(Activity::listening("new launch announcements")),
-        //     OnlineStatus::Online,
-        // )
-        // .await;
         ctx.set_presence(
-            Some(Activity::playing("Please reconfigure me!")),
+            Some(Activity::listening("new launch announcements")),
             OnlineStatus::Online,
         )
         .await;
+
         println!(
             "
             Ready as {}
