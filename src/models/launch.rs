@@ -29,7 +29,7 @@ pub struct Launch {
 }
 
 impl Launch {
-    pub async fn get_next_launch<'a>() -> Result<ApiResult<Launch>, Box<dyn Error>> {
+    pub async fn get_next_launch() -> Result<ApiResult<Launch>, Box<dyn Error>> {
         let res = reqwest::get(&format!(
             "{}/launch/upcoming/?format=json&mode=detailed",
             BASE_URL

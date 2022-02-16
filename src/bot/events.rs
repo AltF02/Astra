@@ -3,14 +3,11 @@ mod reaction_add;
 mod ready;
 
 use crate::bot::loops::launches_loop;
-use crate::bot::utils::Utils;
-use crate::extensions::context::ClientContextExt;
 
 use crate::bot::events::guild_create::GuildCreateEvent;
 use crate::bot::events::reaction_add::ReactionAddEvent;
 use crate::bot::events::ready::ReadyEvent;
 use log::info;
-use log::*;
 use serenity::{async_trait, model::prelude::*, prelude::*};
 use std::sync::Arc;
 

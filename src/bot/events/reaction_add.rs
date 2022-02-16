@@ -1,5 +1,6 @@
 use crate::bot::utils::Utils;
 use crate::extensions::ClientContextExt;
+use anyhow::Result;
 use log::error;
 use serenity::model::prelude::Reaction;
 use serenity::prelude::Context;
@@ -7,11 +8,11 @@ use serenity::prelude::Context;
 pub struct ReactionAddEvent;
 
 impl ReactionAddEvent {
-    pub async fn run(ctx: &Context, reaction: &Reaction) {
+    pub async fn run(ctx: &Context, reaction: &Reaction) -> Result<()> {
         if reaction.user_id.unwrap() == ctx.cache.current_user_id().await
             || reaction.emoji.to_string() != "🔔"
         {
-            return;
+            return Ok(());
         }
 
         let message = match ctx
@@ -22,12 +23,12 @@ impl ReactionAddEvent {
             Some(message) => message,
             None => match reaction.message(&ctx.http).await {
                 Ok(message) => message,
-                Err(_) => return,
+                Err(_) => return Ok(()),
             },
         };
 
         if message.author.id != ctx.cache.current_user_id().await {
-            return;
+            return Ok(());
         }
 
         let embed = &message.embeds[0];
@@ -41,18 +42,17 @@ impl ReactionAddEvent {
 
         let db = ctx.get_db().await;
 
-        reaction.delete(&ctx.http).await;
-        let db_user = sqlx::query!(
-            "SELECT * FROM astra.reminders WHERE user_id = $1 AND launch_id = $2",
-            &(user.id.0 as i64),
-            id,
-        )
-        .fetch_optional(&db.pool)
-        .await;
+        reaction.delete(&ctx.http).await?;
+        let db_user =
+            sqlx::query("SELECT * FROM astra.reminders WHERE user_id = $1 AND launch_id = $2")
+                .bind(user.id.0 as i64)
+                .bind(id)
+                .fetch_optional(&db.pool)
+                .await;
 
         if let Err(e) = db_user {
             error!("Failed to query, {}", e);
-            return;
+            return Ok(());
         }
 
         let db_user = db_user.unwrap();
@@ -67,18 +67,16 @@ impl ReactionAddEvent {
                                     &name
                                 ))
                                 // .timestamp(chrono::offset::Utc::now())
-                                .colour(0xe6e600)
+                                .colour(0xe6e600_u64)
                         })
                     })
                     .await,
                 );
-                sqlx::query!(
-                    "DELETE FROM astra.reminders WHERE user_id = $1 AND launch_id = $2",
-                    &(user.id.0 as i64),
-                    &id
-                )
-                .execute(&db.pool)
-                .await;
+                sqlx::query("DELETE FROM astra.reminders WHERE user_id = $1 AND launch_id = $2")
+                    .bind(user.id.0 as i64)
+                    .bind(id)
+                    .execute(&db.pool)
+                    .await?;
             }
             None => {
                 Utils::check_msg(user.dm(&ctx.http, |m| { m
@@ -86,17 +84,17 @@ impl ReactionAddEvent {
                         .title("Reminder Confirmation")
                         .description(format!("I will remind about launch **{}**. If you want to stop me from reminding you, hit the bell emoji again", &name))
                         // .timestamp(chrono::offset::Utc::now())
-                        .colour(0x15c400)
+                        .color(0x15c400_u64)
                     })
                 }).await);
-                sqlx::query!(
-                    "INSERT INTO astra.reminders (user_id, launch_id) VALUES ($1, $2)",
-                    &(user.id.0 as i64),
-                    &id
-                )
-                .execute(&db.pool)
-                .await;
+                sqlx::query("INSERT INTO astra.reminders (user_id, launch_id) VALUES ($1, $2)")
+                    .bind(user.id.0 as i64)
+                    .bind(id)
+                    .execute(&db.pool)
+                    .await?;
             }
-        }
+        };
+
+        Ok(())
     }
 }
