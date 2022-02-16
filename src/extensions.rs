@@ -32,4 +32,3 @@ pub use channel::ChannelExt;
 pub use context::ClientContextExt;
 pub use duration::DurationExt;
 pub use message::MessageExt;
-// pub use user:
