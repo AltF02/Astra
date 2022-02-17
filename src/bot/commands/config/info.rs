@@ -9,9 +9,8 @@ use serenity::prelude::Context;
 
 #[command]
 pub async fn config_info(ctx: &Context, msg: &Message) -> CommandResult {
-    let db = ctx.get_db().await;
+    let (db, config) = ctx.get_db_and_config().await;
     let guild_id = msg.guild_id.unwrap().0 as i64;
-    let guild = msg.guild(&ctx).await.unwrap();
     let guild_db: Option<DBGuild> =
         sqlx::query_as("SELECT * FROM astra.guilds WHERE guild_id = $1")
             .bind(guild_id)
@@ -19,11 +18,14 @@ pub async fn config_info(ctx: &Context, msg: &Message) -> CommandResult {
             .await?;
 
     match guild_db {
-        Some(guild_db) => send_settings(&guild_db, msg, ctx, &guild).await,
+        Some(guild_db) => send_settings(&guild_db, msg, ctx).await?,
         None => {
             msg.reply_error(
                 ctx,
-                "Guild not configured please run `>config channel #channel`",
+                format!(
+                    "Guild not configured please run `{}config channel #channel`",
+                    config.prefix
+                ),
             )
             .await?;
         }

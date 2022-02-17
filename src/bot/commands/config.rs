@@ -2,7 +2,6 @@ mod channel;
 mod info;
 mod set;
 
-use crate::bot::utils::Utils;
 use crate::services::config::Config as BotConfig;
 use crate::services::database::guild::DBGuild;
 
@@ -11,7 +10,8 @@ use self::info::CONFIG_INFO_COMMAND;
 use self::set::SET_COMMAND;
 
 use crate::extensions::context::ClientContextExt;
-use serenity::model::prelude::*;
+use crate::extensions::MessageExt;
+use anyhow::Result;
 use serenity::{framework::standard::macros::group, model::channel::Message, prelude::*};
 
 pub fn format_setting(setting: bool, name: &str, config: &BotConfig) -> String {
@@ -23,7 +23,7 @@ pub fn format_setting(setting: bool, name: &str, config: &BotConfig) -> String {
     format!("{} **{}**\n", emote, name)
 }
 
-async fn send_settings(guild_db: &DBGuild, msg: &Message, ctx: &Context, guild: &Guild) {
+async fn send_settings(guild_db: &DBGuild, msg: &Message, ctx: &Context) -> Result<()> {
     let config = ctx.get_config().await;
     let mut settings: String = "".to_string();
 
@@ -38,21 +38,9 @@ async fn send_settings(guild_db: &DBGuild, msg: &Message, ctx: &Context, guild: 
     );
     settings.push_str(format_setting(guild_db.events, "Events", &config).as_str());
 
-    Utils::check_msg(
-        msg.channel_id
-            .send_message(&ctx.http, |m| {
-                m.embed(|e| {
-                    e.title("Guild settings")
-                        .description(settings)
-                        .footer(|f| {
-                            f.text(&guild.name)
-                                .icon_url(&guild.icon_url().unwrap_or_else(|| " ".to_string()))
-                        })
-                        .color(0x00adf8)
-                })
-            })
-            .await,
-    );
+    msg.reply_success(ctx, settings).await?;
+
+    Ok(())
 }
 
 #[group()]
