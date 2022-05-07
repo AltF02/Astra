@@ -11,7 +11,7 @@ use crate::services::database::launch::DBLaunch;
 pub fn create_basic_embed() -> CreateEmbed {
     let mut e = CreateEmbed::default();
 
-    e.timestamp(&Utc::now());
+    e.timestamp(Utc::now());
     e
 }
 

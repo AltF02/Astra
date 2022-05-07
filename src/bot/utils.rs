@@ -15,7 +15,7 @@ impl Utils {
     }
 
     pub async fn fetch_user_forced(ctx: &Context, user_id: u64) -> Option<User> {
-        return match ctx.cache.user(user_id).await {
+        return match ctx.cache.user(user_id) {
             Some(user) => Some(user),
             None => match ctx.http.get_user(user_id).await {
                 Ok(user) => Some(user),

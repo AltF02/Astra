@@ -51,7 +51,7 @@ pub struct Status {
 
 impl ChannelId {
     pub async fn fetch(&self, ctx: &client::Context) -> Option<Channel> {
-        return match ctx.cache.channel(self.0 as u64).await {
+        return match ctx.cache.channel(self.0 as u64) {
             Some(channel) => Some(channel),
             None => {
                 if let Ok(channel) = ctx.http.get_channel(self.0 as u64).await {

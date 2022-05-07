@@ -7,7 +7,12 @@ use std::fmt;
 struct DispatchWrapper(DispatchError);
 
 #[hook]
-pub async fn dispatch_error_hook(ctx: &Context, msg: &Message, err: DispatchError) {
+pub async fn dispatch_error_hook(
+    ctx: &Context,
+    msg: &Message,
+    err: DispatchError,
+    _command_name: &str,
+) {
     let _ = msg.reply_error(ctx, DispatchWrapper(err)).await;
 }
 
@@ -23,7 +28,7 @@ impl fmt::Display for DispatchWrapper {
                 _ => "You're not allowed to run this command".to_string(),
             },
             DispatchError::Ratelimited(i) => format!("Got rate-limited: {:?}", i),
-            DispatchError::CommandDisabled(_) => "This command is disabled".to_string(),
+            DispatchError::CommandDisabled => "This command is disabled".to_string(),
             DispatchError::BlockedUser => "User is not permitted to use this bot".to_string(),
             DispatchError::BlockedGuild => "Guild is blocked by this bot".to_string(),
             DispatchError::BlockedChannel => "Channel is blocked by this bot".to_string(),
