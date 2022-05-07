@@ -1,10 +1,12 @@
 mod guild_create;
+mod interaction_create;
 mod reaction_add;
 mod ready;
 
 use crate::bot::loops::launches_loop;
 
 use crate::bot::events::guild_create::GuildCreateEvent;
+use crate::bot::events::interaction_create::InteractionCreateEvent;
 use crate::bot::events::reaction_add::ReactionAddEvent;
 use crate::bot::events::ready::ReadyEvent;
 use log::info;
@@ -46,5 +48,9 @@ impl EventHandler for Handler {
             let _ = launches_loop.await;
             *self.run_loops.lock().await = false;
         }
+    }
+
+    async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
+        InteractionCreateEvent::run(&ctx, interaction).await;
     }
 }

@@ -1,3 +1,4 @@
+use crate::bot::components::create_launch_components;
 use crate::bot::embeds::{create_apod_embed, create_basic_embed, create_launch_embed};
 use crate::models::apod::Apod;
 use crate::models::launch::Launch;
@@ -37,8 +38,15 @@ impl ChannelExt for Channel {
 
     async fn send_launch(&self, ctx: &client::Context, n: &Launch, r: &String) -> Result<Message> {
         let e = create_launch_embed(n, r);
+        let c = create_launch_components(&n.id);
 
-        self.id().send_message(ctx, move |m| m.set_embed(e)).await
+        self.id()
+            .send_message(ctx, move |m| {
+                m.set_embed(e);
+                m.set_components(c);
+                m
+            })
+            .await
     }
 
     async fn send_apod(&self, ctx: &client::Context, n: &Apod) -> Result<Message> {
