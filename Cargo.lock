@@ -42,6 +42,7 @@ dependencies = [
  "chrono",
  "dotenv",
  "fern",
+ "lazy_static",
  "log",
  "regex",
  "reqwest",

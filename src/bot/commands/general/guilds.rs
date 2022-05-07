@@ -7,10 +7,7 @@ use serenity::prelude::Context;
 async fn guilds(ctx: &Context, msg: &Message) -> CommandResult {
     msg.reply(
         &ctx,
-        format!(
-            "I've been added to **{}** Guilds",
-            ctx.cache.guilds().await.len()
-        ),
+        format!("I've been added to **{}** Guilds", ctx.cache.guilds().len()),
     )
     .await?;
     Ok(())

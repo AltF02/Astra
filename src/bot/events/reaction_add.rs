@@ -9,17 +9,13 @@ pub struct ReactionAddEvent;
 
 impl ReactionAddEvent {
     pub async fn run(ctx: &Context, reaction: &Reaction) -> Result<()> {
-        if reaction.user_id.unwrap() == ctx.cache.current_user_id().await
+        if reaction.user_id.unwrap() == ctx.cache.current_user_id()
             || reaction.emoji.to_string() != "🔔"
         {
             return Ok(());
         }
 
-        let message = match ctx
-            .cache
-            .message(reaction.channel_id, reaction.message_id)
-            .await
-        {
+        let message = match ctx.cache.message(reaction.channel_id, reaction.message_id) {
             Some(message) => message,
             None => match reaction.message(&ctx.http).await {
                 Ok(message) => message,
@@ -27,7 +23,7 @@ impl ReactionAddEvent {
             },
         };
 
-        if message.author.id != ctx.cache.current_user_id().await {
+        if message.author.id != ctx.cache.current_user_id() {
             return Ok(());
         }
 
@@ -35,7 +31,7 @@ impl ReactionAddEvent {
         let id = &embed.footer.as_ref().unwrap().text;
         let name = &embed.title.as_ref().unwrap();
 
-        let user = match ctx.cache.user(reaction.user_id.unwrap()).await {
+        let user = match ctx.cache.user(reaction.user_id.unwrap()) {
             Some(user) => user,
             None => reaction.user(&ctx.http).await.unwrap(),
         };

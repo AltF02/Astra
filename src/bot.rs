@@ -1,6 +1,7 @@
 use crate::services::{config::Config, database::DB};
 
 use events::Handler;
+use lazy_static::lazy_static;
 use log::warn;
 use serenity::{
     framework::standard::{
@@ -26,6 +27,15 @@ mod events;
 mod hooks;
 mod loops;
 mod utils;
+
+lazy_static! {
+    static ref INTENTS: GatewayIntents = GatewayIntents::DIRECT_MESSAGES
+        .union(GatewayIntents::MESSAGE_CONTENT)
+        .union(GatewayIntents::GUILD_MESSAGE_REACTIONS)
+        .union(GatewayIntents::GUILD_MESSAGES)
+        .union(GatewayIntents::GUILD_MEMBERS)
+        .union(GatewayIntents::GUILDS);
+}
 
 #[help]
 #[command_not_found_text = "Could not find: `{}`."]
@@ -67,7 +77,7 @@ pub async fn start(config: Config) {
         .group(&commands::config::CONFIG_GROUP)
         .help(&MY_HELP);
 
-    let mut client = Client::builder(&config.token)
+    let mut client = Client::builder(&config.token, *INTENTS)
         .framework(framework)
         .event_handler(Handler {
             run_loops: Mutex::new(true),
