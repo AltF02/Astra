@@ -44,7 +44,7 @@ impl InteractionCreateEvent {
         let mut content = if reminder_exists {
             format!("I will stop reminding you for **{}**", launch_name)
         } else {
-            format!("I wil remind you for **{}**! If you want me to stop from reminding you, hit the button again", launch_name)
+            format!("I will remind you for **{}**! If you want me to stop from reminding you, hit the button again", launch_name)
         };
 
         let dm_channel = component.user.create_dm_channel(&ctx).await;
