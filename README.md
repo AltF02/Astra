@@ -3,53 +3,51 @@
 [![Discord Bots](https://top.gg/api/widget/status/675542011457044512.svg)](https://top.gg/bot/675542011457044512)
 
 Astra is a discord bot written in rust to keep you reminded on rocket launches and more! An always online bot is available **[here](https://discord.com/oauth2/authorize?client_id=675542011457044512&permissions=322624&scope=bot%20applications.commands)**
-## How to start (THE CONFIG SYSTEM IS BEING REWRITTEN AND THIS CURRENTLY DOESN'T WORK!)
+## How to start
+
+### Native
 Clone the repo with 
 ```shell script
 git clone https://github.com/AltF02/astra.git
 ```
 
-Now we need to setup sqlx and we do that by doing
+We need to copy the example.env to .env
 ```shell script
-cargo install sqlx-cli --no-default-features --features postgres
+cp .example.env .env
 ```
-
-Before we run we need to set the database environment variable temporarily, this is different for most shells. This is needed for the library sqlx.
-
-#### cmd
-```shell script
-set DATABASE_URL=postgres://postgres:postgres@localhost/postgres
-```
-#### sh
-```shell script
-export DATBASE_URL=postgres://postgres:postgres@localhost/postgres
-```
-
-#### fish
-```shell script
-set -g -x  DATABASE_URL "postgres://postgres:postgres@localhost/postgres"
-```
-etc...
-
-Now once that's done we're going to run, this will take some time as its compiling everything
+Fill out this with your token and configuration. Once that's done we're going to run, this will take some time as its compiling everything
 ```shell script
 cargo run
 ```
 
-NOTE: this will panic
+### Docker
+**NOTE: Docker support is currently in beta and can cause issues**
 
-This will ask you to enter each of the configuration values. If you wish edit the physical config.yml file then type "n" when it asks you if you wish to enter the config details and the bot will close and generate a predefined config.yml file for you to configure.
-If anything goes wrong for any reason you can manually make a config.yml in the root with this:
+#### docker-compose
+Using docker compose requires an .env file, an template can be found in `.example.env`
+
 ```yaml
----
-token: 
-prefix: ";"
-db_uri: "postgres://postgres:password@localhost/postgres"
-nasa_key: 
-log_channel_id: 
-```
+version: "3"
+services:
+  astra:
+    restart: always
+    build: .
+    networks:
+      - astra
+    env_file:
+      - .env
+  astra-db:
+    image: postgres:14.1-alpine3.14
+    volumes:
+      - data:/var/lib/postgresql/data
+    networks:
+      - astra
+    ports:
+      - "5432:5432"
 
-Now run it again and it should work
-```shell script 
-cargo run
+volumes:
+  data:
+
+networks:
+  astra:
 ```
