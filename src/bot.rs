@@ -22,6 +22,7 @@ use std::collections::HashSet;
 use std::sync::Arc;
 
 mod commands;
+pub mod components;
 pub mod embeds;
 mod events;
 mod hooks;

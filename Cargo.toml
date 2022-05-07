@@ -27,7 +27,7 @@ features = ["colored"]
 
 [dependencies.serenity]
 version = "0.11"
-features = ["framework", "standard_framework", "rustls_backend", "cache", "collector", "utils", "unstable_discord_api", "chrono"]
+features = ["framework", "standard_framework", "rustls_backend", "cache", "collector", "utils", "unstable_discord_api", "chrono", "model"]
 
 [dependencies.tokio]
 version = "1"

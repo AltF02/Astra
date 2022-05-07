@@ -8,7 +8,6 @@ use chrono::{DateTime, Utc};
 
 use log::warn;
 
-use serenity::model::channel::ReactionType::Unicode;
 use serenity::prelude::Context;
 use std::error::Error;
 use std::sync::Arc;
@@ -21,7 +20,7 @@ pub async fn dispatch_to_guilds(
 ) -> Result<(), Box<dyn Error>> {
     let guilds = db.get_guilds_queried(true, Query::Launches).await;
 
-    let remaining_str = (dt - chrono::offset::Utc::now()).create_24h();
+    let remaining_str = (dt - Utc::now()).create_24h();
     for guild in guilds {
         let channel = match guild.channel_id.fetch(ctx).await {
             Some(channel) => channel,
@@ -30,9 +29,11 @@ pub async fn dispatch_to_guilds(
             }
         };
 
-        if let Ok(m) = channel.send_launch(ctx, next_launch, &remaining_str).await {
-            m.react(&ctx, Unicode("🔔".to_string())).await?;
-        } else {
+        if channel
+            .send_launch(ctx, next_launch, &remaining_str)
+            .await
+            .is_err()
+        {
             warn!("Failed to send Launch to {}", channel.id());
         }
     }
@@ -67,10 +68,10 @@ pub async fn check_future_launch(ctx: Arc<Context>) -> Result<(), Box<dyn Error>
             }
         }
 
-        let mut dblaunch = DBLaunch::from(next_launch);
-        dblaunch.dispatched = dispatched;
+        let mut db_launch = DBLaunch::from(next_launch);
+        db_launch.dispatched = dispatched;
 
-        db.set_launch(dblaunch).await?;
+        db.set_launch(db_launch).await?;
     }
 
     Ok(())

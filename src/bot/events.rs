@@ -1,11 +1,11 @@
 mod guild_create;
-mod reaction_add;
+mod interaction_create;
 mod ready;
 
 use crate::bot::loops::launches_loop;
 
 use crate::bot::events::guild_create::GuildCreateEvent;
-use crate::bot::events::reaction_add::ReactionAddEvent;
+use crate::bot::events::interaction_create::InteractionCreateEvent;
 use crate::bot::events::ready::ReadyEvent;
 use log::info;
 use serenity::{async_trait, model::prelude::*, prelude::*};
@@ -27,10 +27,6 @@ impl EventHandler for Handler {
         GuildCreateEvent::run(&ctx, &guild, &is_new).await;
     }
 
-    async fn reaction_add(&self, ctx: Context, reaction: Reaction) {
-        ReactionAddEvent::run(&ctx, &reaction).await;
-    }
-
     async fn ready(&self, ctx: Context, ready: Ready) {
         ReadyEvent::run(&ctx, &ready).await;
 
@@ -46,5 +42,9 @@ impl EventHandler for Handler {
             let _ = launches_loop.await;
             *self.run_loops.lock().await = false;
         }
+    }
+
+    async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
+        InteractionCreateEvent::run(&ctx, interaction).await;
     }
 }
